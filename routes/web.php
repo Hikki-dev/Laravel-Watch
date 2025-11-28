@@ -73,6 +73,7 @@ Route::get('/debug-config', function () {
         'mysql_username' => config('database.connections.mysql.username'),
         'mysql_url_is_set' => !empty(config('database.connections.mysql.url')),
         'env_db_host' => env('DB_HOST'),
+        'env_mysql_host' => env('MYSQLHOST'),
         'env_db_url_is_set' => !empty(env('DB_URL')),
         'app_name' => config('app.name'),
         'env_app_name' => env('APP_NAME'),
