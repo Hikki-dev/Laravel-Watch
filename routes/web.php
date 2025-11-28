@@ -63,3 +63,16 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
     Route::get('/dashboard', [\App\Http\Controllers\SellerController::class, 'dashboard'])->name('dashboard');
     Route::get('/products', [\App\Http\Controllers\SellerController::class, 'products'])->name('products.index');
 });
+
+Route::get('/debug-config', function () {
+    return [
+        'db_connection' => config('database.default'),
+        'mysql_host' => config('database.connections.mysql.host'),
+        'mysql_port' => config('database.connections.mysql.port'),
+        'mysql_database' => config('database.connections.mysql.database'),
+        'mysql_username' => config('database.connections.mysql.username'),
+        'mysql_url_is_set' => !empty(config('database.connections.mysql.url')),
+        'env_db_host' => env('DB_HOST'),
+        'env_db_url_is_set' => !empty(env('DB_URL')),
+    ];
+});
