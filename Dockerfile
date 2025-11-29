@@ -46,4 +46,4 @@ EXPOSE 8000
 # Start command
 # WARNING: migrate:fresh --seed will wipe your database on every deployment.
 # Remove it if you want persistent data.
-CMD sh -c "php artisan migrate:fresh --seed --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
+CMD sh -c "php artisan optimize && php artisan migrate:fresh --seed --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
