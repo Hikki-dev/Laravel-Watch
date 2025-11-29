@@ -80,3 +80,22 @@ Route::get('/debug-config', function () {
         'app_key_is_set' => !empty(env('APP_KEY')),
     ];
 });
+
+Route::get('/debug-vite', function () {
+    $manifestPath = public_path('build/manifest.json');
+    $manifestExists = file_exists($manifestPath);
+    $manifestContent = $manifestExists ? json_decode(file_get_contents($manifestPath), true) : null;
+    
+    return [
+        'app_env' => config('app.env'),
+        'app_debug' => config('app.debug'),
+        'asset_url' => config('app.asset_url'),
+        'public_path' => public_path(),
+        'build_path' => public_path('build'),
+        'manifest_exists' => $manifestExists,
+        'manifest_content' => $manifestContent,
+        'hot_file_exists' => file_exists(public_path('hot')),
+        'vite_tags' => Illuminate\Support\Facades\Vite::tags(['resources/css/app.css', 'resources/js/app.js'])->toHtml(),
+    ];
+});
+
