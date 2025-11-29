@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/users', [\App\Http\Controllers\AdminController::class, 'users'])->name('users.index');
+    Route::delete('/users/{user}', [\App\Http\Controllers\AdminController::class, 'destroy'])->name('users.destroy');
     Route::get('/orders', [\App\Http\Controllers\AdminController::class, 'orders'])->name('orders.index');
     Route::get('/approvals', [\App\Http\Controllers\AdminController::class, 'approvals'])->name('products.approvals');
     Route::post('/products/{product}/approve', [\App\Http\Controllers\AdminController::class, 'approve'])->name('products.approve');

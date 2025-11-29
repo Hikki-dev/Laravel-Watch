@@ -80,4 +80,18 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Product rejected.');
     }
+    /**
+     * Delete a user.
+     */
+    public function destroy(User $user)
+    {
+        // Prevent admin from deleting themselves
+        if ($user->id === auth()->id()) {
+            return redirect()->back()->with('error', 'You cannot delete your own account.');
+        }
+
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted successfully.');
+    }
 }
