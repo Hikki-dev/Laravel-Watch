@@ -40,10 +40,15 @@ RUN npm install && npm run build
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh /var/www/docker-entrypoint.sh
+RUN chmod +x /var/www/docker-entrypoint.sh
+
 # Expose port 8000
 EXPOSE 8000
 
+# Set entrypoint
+ENTRYPOINT ["/var/www/docker-entrypoint.sh"]
+
 # Start command
-# WARNING: migrate:fresh --seed will wipe your database on every deployment.
-# Remove it if you want persistent data.
-CMD sh -c "php artisan optimize && php artisan migrate:fresh --seed --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
