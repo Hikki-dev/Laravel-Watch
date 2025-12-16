@@ -67,6 +67,22 @@
                             </svg>
                             <span class="text-sm font-medium text-gray-900">Add New Product</span>
                         </a>
+
+                        @if(Auth::user()->stripe_account_enabled)
+                            <div class="flex flex-col items-center justify-center p-6 bg-green-50 rounded-lg border border-green-200 col-span-2">
+                                <svg class="w-8 h-8 text-green-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-sm font-medium text-green-900">Stripe Connected</span>
+                            </div>
+                        @else
+                            <a href="{{ route('seller.stripe.connect') }}" class="flex flex-col items-center justify-center p-6 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition border border-indigo-200 col-span-2">
+                                <svg class="w-8 h-8 text-indigo-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                </svg>
+                                <span class="text-sm font-medium text-indigo-900">Connect with Stripe</span>
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>

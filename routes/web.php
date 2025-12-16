@@ -63,6 +63,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\SellerController::class, 'dashboard'])->name('dashboard');
     Route::get('/products', [\App\Http\Controllers\SellerController::class, 'products'])->name('products.index');
+    
+    // Stripe Connect
+    Route::get('/stripe/connect', [\App\Http\Controllers\StripeConnectController::class, 'connect'])->name('stripe.connect');
+    Route::get('/stripe/callback', [\App\Http\Controllers\StripeConnectController::class, 'callback'])->name('stripe.callback');
 });
 
 Route::get('/debug-config', function () {

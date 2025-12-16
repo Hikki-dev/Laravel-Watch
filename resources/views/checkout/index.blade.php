@@ -62,82 +62,19 @@
                                 @enderror
                             </div>
 
-                            <div class="mt-4" x-data="{ paymentMethod: 'credit_card' }">
-                                <h3 class="text-lg font-medium text-gray-900 mb-4">Payment Method</h3>
-                                <div class="space-y-4">
-                                    <div class="flex items-center">
-                                        <input id="credit_card" name="payment_method" type="radio" value="credit_card" x-model="paymentMethod"
-                                            class="focus:ring-luxury-gold h-4 w-4 text-luxury-gold border-gray-300">
-                                        <label for="credit_card" class="ml-3 block text-sm font-medium text-gray-700">
-                                            Credit/Debit Card
-                                        </label>
-                                    </div>
-                                    
-                                    <!-- Credit Card Details Section -->
-                                    <div x-show="paymentMethod === 'credit_card'" class="mt-4 p-4 bg-gray-50 rounded-md border border-gray-200 space-y-4" x-transition>
-                                        <div>
-                                            <label for="card_holder" class="block text-sm font-medium text-gray-700">Card Holder Name</label>
-                                            <input type="text" name="card_holder" id="card_holder" 
-                                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-luxury-gold focus:border-luxury-gold"
-                                                placeholder="John Doe">
-                                            @error('card_holder')
-                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                        <div>
-                                            <label for="card_number" class="block text-sm font-medium text-gray-700">Card Number</label>
-                                            <input type="text" name="card_number" id="card_number" maxlength="19"
-                                                x-on:input="$el.value = $el.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim()"
-                                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-luxury-gold focus:border-luxury-gold"
-                                                placeholder="0000 0000 0000 0000">
-                                            @error('card_number')
-                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                        <div class="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label for="card_expiry" class="block text-sm font-medium text-gray-700">Expiry Date</label>
-                                                <input type="text" name="card_expiry" id="card_expiry" placeholder="MM/YY" maxlength="5"
-                                                    x-on:input="
-                                                        let v = $el.value.replace(/\D/g, '');
-                                                        if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2, 4);
-                                                        $el.value = v;
-                                                    "
-                                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-luxury-gold focus:border-luxury-gold">
-                                                @error('card_expiry')
-                                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                            <div>
-                                                <label for="card_cvc" class="block text-sm font-medium text-gray-700">CVC</label>
-                                                <input type="text" name="card_cvc" id="card_cvc" maxlength="4"
-                                                    x-on:input="$el.value = $el.value.replace(/\D/g, '')"
-                                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-luxury-gold focus:border-luxury-gold"
-                                                    placeholder="123">
-                                                @error('card_cvc')
-                                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex items-center">
-                                        <input id="cash_on_delivery" name="payment_method" type="radio" value="cash_on_delivery" x-model="paymentMethod"
-                                            class="focus:ring-luxury-gold h-4 w-4 text-luxury-gold border-gray-300">
-                                        <label for="cash_on_delivery" class="ml-3 block text-sm font-medium text-gray-700">
-                                            Cash on Delivery
-                                        </label>
-                                    </div>
-                                </div>
-                                @error('payment_method')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-
                             <div class="mt-6">
-                                <button type="submit" class="w-full bg-luxury-gold text-white font-bold py-3 px-4 rounded hover:bg-luxury-darkGold transition">
-                                    Place Order (${{ number_format($total, 2) }})
+                                <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded hover:bg-indigo-700 transition flex justify-center items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.895-1.352 2.222-1.352 1.242 0 2.657.492 3.369.92l.738-1.551c-1.285-.92-3.132-1.254-4.567-1.254-2.551 0-4.015 1.325-4.015 3.363 0 2.592 2.809 3.196 4.706 3.844 1.832.618 2.308.97 2.308 1.848 0 .914-1.094 1.481-2.586 1.481-1.36 0-3.32-.781-4.053-1.3l-.758 1.574c1.238.996 3.203 1.464 5.093 1.464 2.895 0 4.29-1.554 4.29-3.52 0-2.613-2.613-3.08-4.391-3.693Z"/>
+                                    </svg>
+                                    Pay with Stripe (${{ number_format($total, 2) }})
                                 </button>
+                                <p class="mt-4 text-center text-sm text-gray-500">
+                                    <svg class="h-4 w-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                    </svg>
+                                    Your payment is secure and processed by Stripe.
+                                </p>
                             </div>
                         </div>
                     </form>

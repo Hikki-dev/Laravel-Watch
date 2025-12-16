@@ -63,19 +63,6 @@ class CheckoutController extends Controller
             'city' => 'required|string|max:100',
             'postal_code' => 'required|string|max:20',
             'country' => 'required|string|max:100',
-            'payment_method' => 'required|in:credit_card,cash_on_delivery',
-            'card_holder' => 'required_if:payment_method,credit_card|nullable|string|max:255',
-            'card_number' => ['required_if:payment_method,credit_card', 'nullable', 'string', 'regex:/^[\d\s]+$/', 'min:16', 'max:19'],
-            'card_expiry' => ['required_if:payment_method,credit_card', 'nullable', 'string', 'regex:/^(0[1-9]|1[0-2])\/?([0-9]{2})$/'],
-            'card_cvc' => ['required_if:payment_method,credit_card', 'nullable', 'string', 'regex:/^[0-9]{3,4}$/'],
-        ], [
-            'card_holder.required_if' => 'The card holder name is required for card payments.',
-            'card_number.required_if' => 'The card number is required for card payments.',
-            'card_number.regex' => 'The card number must contain only digits.',
-            'card_expiry.required_if' => 'The expiry date is required for card payments.',
-            'card_expiry.regex' => 'The expiry date must be in MM/YY format.',
-            'card_cvc.required_if' => 'The CVC is required for card payments.',
-            'card_cvc.regex' => 'The CVC must be a valid 3 or 4 digit number.',
         ]);
 
         $user = Auth::user();
@@ -90,23 +77,22 @@ class CheckoutController extends Controller
         $tax = $subtotal * 0.08;
         $total = $subtotal + $tax;
 
-        // Use a transaction to ensure data integrity
         DB::beginTransaction();
 
         try {
-            // 1. Create Order
+            // 1. Create Order (Pending)
             $order = Order::create([
                 'user_id' => $user->id,
                 'total_amount' => $total,
                 'status' => 'pending',
                 'shipping_address' => $request->shipping_address . ', ' . $request->city . ', ' . $request->postal_code . ', ' . $request->country,
-                'payment_status' => 'paid', // Simulating successful payment
-                'payment_method' => $request->payment_method,
+                'payment_status' => 'unpaid',
+                'payment_method' => 'stripe',
             ]);
 
-            // 2. Create Order Items and Deduct Stock
+            // 2. Create Order Items
             foreach ($cartItems as $item) {
-                // Check stock again
+                // Check stock
                 if ($item->product->stock_quantity < $item->quantity) {
                     throw new \Exception("Insufficient stock for product: " . $item->product->name);
                 }
@@ -117,17 +103,58 @@ class CheckoutController extends Controller
                     'quantity' => $item->quantity,
                     'price' => $item->product->price,
                 ]);
-
-                // Deduct stock
+                
+                // We do NOT deduct stock yet, or we reserve it. 
+                // For simplicity, let's deduct now and refund/restock if payment fails (or just deduct now).
                 $item->product->decrement('stock_quantity', $item->quantity);
             }
 
-            // 3. Clear Cart
-            $user->cart()->delete();
-
             DB::commit();
 
-            return redirect()->route('checkout.success', $order);
+            // 3. Create Stripe Session
+            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+
+            $lineItems = [];
+            foreach ($cartItems as $item) {
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => $item->product->name,
+                            'images' => $item->product->image ? [asset('storage/' . $item->product->image)] : [],
+                        ],
+                        'unit_amount' => (int) ($item->product->price * 100),
+                    ],
+                    'quantity' => $item->quantity,
+                ];
+            }
+            
+            // Add tax as a line item for simplicity (Stripe Tax is better but complex)
+            if ($tax > 0) {
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Tax (8%)',
+                        ],
+                        'unit_amount' => (int) ($tax * 100),
+                    ],
+                    'quantity' => 1,
+                ];
+            }
+
+            $session = \Stripe\Checkout\Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => $lineItems,
+                'mode' => 'payment',
+                'success_url' => route('checkout.success', $order) . '?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => route('cart.index'), 
+                'metadata' => [
+                    'order_id' => $order->id,
+                ],
+            ]);
+
+            return redirect($session->url);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -138,10 +165,30 @@ class CheckoutController extends Controller
     /**
      * Display the success page.
      */
-    public function success(Order $order)
+    public function success(Request $request, Order $order)
     {
         if ($order->user_id !== Auth::id()) {
             abort(403);
+        }
+
+        if ($request->has('session_id')) {
+            try {
+                \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+                $session = \Stripe\Checkout\Session::retrieve($request->get('session_id'));
+
+                if ($session->payment_status === 'paid') {
+                    if ($order->payment_status !== 'paid') {
+                        $order->update(['payment_status' => 'paid']);
+                        
+                        // Clear cart
+                        Auth::user()->cart()->delete();
+                    }
+                } else {
+                    return redirect()->route('cart.index')->with('error', 'Payment failed.');
+                }
+            } catch (\Exception $e) {
+                return redirect()->route('cart.index')->with('error', 'Error verifying payment: ' . $e->getMessage());
+            }
         }
 
         return view('checkout.success', compact('order'));

@@ -36,6 +36,8 @@ class User extends Authenticatable
         'country',
         'postal_code',
         'is_active',
+        'stripe_account_id',
+        'stripe_account_enabled',
     ];
 
     /**
