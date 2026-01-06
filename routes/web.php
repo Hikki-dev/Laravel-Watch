@@ -5,11 +5,18 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
-    $categories = \App\Models\Category::all();
-    $featured_products = \App\Models\Product::where('is_featured', true)->limit(4)->get();
-    if ($featured_products->isEmpty()) {
-        $featured_products = \App\Models\Product::latest()->limit(4)->get();
-    }
+    $categories = \Illuminate\Support\Facades\Cache::remember('home_categories', 60 * 60, function () {
+        return \App\Models\Category::all();
+    });
+
+    $featured_products = \Illuminate\Support\Facades\Cache::remember('home_featured_products', 60 * 60, function () {
+        $products = \App\Models\Product::where('is_featured', true)->limit(4)->get();
+        if ($products->isEmpty()) {
+            return \App\Models\Product::latest()->limit(4)->get();
+        }
+        return $products;
+    });
+
     return view('welcome', compact('categories', 'featured_products'));
 });
 

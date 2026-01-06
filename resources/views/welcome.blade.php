@@ -7,12 +7,14 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
 </head>
 <body class="antialiased font-sans text-gray-900 bg-gray-100">
     <div class="min-h-screen flex flex-col">
         <!-- Navigation -->
         <!-- Navigation -->
         @include('navigation-menu')
+
 
         <!-- Hero Section -->
         <section class="relative h-screen bg-gray-900 overflow-hidden">
@@ -58,7 +60,7 @@
                             </div>
                             <h3 class="text-xl font-semibold mb-2">{{ $category->name }}</h3>
                             <p class="text-gray-600 mb-4">{{ Str::limit($category->description, 100) }}</p>
-                            <a href="{{ route('products.index', ['category' => $category->id]) }}" class="inline-flex items-center text-yellow-600 hover:text-yellow-700 font-medium">
+                            <a href="{{ route('products.index', ['brand' => $category->name]) }}" class="inline-flex items-center text-yellow-600 hover:text-yellow-700 font-medium">
                                 View Collection
                                 <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -124,5 +126,6 @@
         <!-- Footer -->
         <x-footer />
     </div>
+    @livewireScripts
 </body>
 </html>
