@@ -10,11 +10,16 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+
+    public function index()
+    {
+        return response()->json(['data' => \App\Models\Product::all()]);
+    }
     /**
      * Store a newly created product in storage.
      */
     public function store(Request $request)
-    {
+    {   
         // 1. Authorization: Only Sellers (or Admin) can create products
         if (!auth()->user()->isAdmin() && auth()->user()->role !== 'seller') {
             return response()->json(['message' => 'Unauthorized action.'], 403);
