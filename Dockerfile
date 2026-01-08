@@ -1,54 +1,54 @@
 FROM php:8.2
 
-# Install system dependencies
+# 1. Install system dependencies and Node.js in a single layer to ensure consistency
+# We install curl first, then setup NodeSource, then install nodejs and other libs.
 RUN apt-get update && apt-get install -y \
-    git \
     curl \
+    git \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
     zip \
-    unzip
+    unzip \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js (using NodeSource for a newer version, e.g., v20)
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs
+# 2. Verify Node/NPM installation immediately
+RUN node -v && npm -v
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install PHP extensions
+# 3. Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Get latest Composer
+# 4. Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# 5. Set working directory
 WORKDIR /var/www
 
-# Copy existing application directory contents
+# 6. Copy existing application directory contents
 COPY . /var/www
 
-# Install PHP dependencies
+# 7. Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Install Node dependencies and build assets
+# 8. Install Node dependencies and build assets
 RUN npm install && npm run build
 
-# Set permissions
+# 9. Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# Copy entrypoint script
+# 10. Copy entrypoint script
 COPY docker-entrypoint.sh /var/www/docker-entrypoint.sh
 RUN chmod +x /var/www/docker-entrypoint.sh
 
-# Expose port 8000
+# 11. Expose port 8000
 EXPOSE 8000
 
-# Set entrypoint
+# 12. Set entrypoint
 ENTRYPOINT ["/var/www/docker-entrypoint.sh"]
 
-# Start command
+# 13. Start command
 CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
