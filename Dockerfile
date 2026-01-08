@@ -1,7 +1,8 @@
-FROM php:8.2
+FROM node:20-bookworm AS node_base
 
-# 1. Install system dependencies and Node.js in a single layer to ensure consistency
-# We install curl first, then setup NodeSource, then install nodejs and other libs.
+FROM php:8.2-bookworm
+
+# 1. Install system dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     git \
@@ -11,11 +12,14 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     unzip \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# 2. Verify Node/NPM installation immediately
+# 2. Copy Node.js and NPM from official image (Multistage Build)
+COPY --from=node_base /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --from=node_base /usr/local/bin/node /usr/local/bin/node
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
+
+# Verify Node installation
 RUN node -v && npm -v
 
 # 3. Install PHP extensions
