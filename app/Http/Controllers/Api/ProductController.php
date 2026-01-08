@@ -34,9 +34,7 @@ class ProductController extends Controller
             'stock_quantity' => 'required|integer',
             'brand' => 'required|string',
             'model' => 'required|string',
-            // Image handling via API usually involves base64 or multipart form-data.
-            // For simplicity in this JSON API, we might expect a separate upload endpoint or skip complex file handling now.
-            // We'll leave images optional here for the basic CRUD.
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         // 3. Prepare Data
@@ -47,6 +45,25 @@ class ProductController extends Controller
 
         // 4. Save Product
         $product = Product::create($validated);
+
+        // 5. Handle Image Uploads
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('products', 'public');
+                $fileContent = file_get_contents($image->getRealPath());
+
+                $productImage = $product->images()->create([
+                    'image_path' => 'storage/' . $path,
+                    'image_data' => $fileContent,
+                    'is_primary' => $index === 0,
+                    'sort_order' => $index,
+                ]);
+
+                if ($index === 0) {
+                     $product->update(['image_url' => route('images.products', $productImage->id)]);
+                }
+            }
+        }
 
         return response()->json([
             'status' => 'success',
@@ -82,6 +99,28 @@ class ProductController extends Controller
         // Reset status if seller updates
         if (auth()->user()->role === 'seller') {
             $validated['status'] = 'pending';
+        }
+
+        if ($request->hasFile('images')) {
+             $request->validate([
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('products', 'public');
+                $fileContent = file_get_contents($image->getRealPath());
+                
+                $productImage = $product->images()->create([
+                    'image_path' => 'storage/' . $path,
+                    'image_data' => $fileContent,
+                    'is_primary' => false,
+                    'sort_order' => $index,
+                ]);
+
+                if (!$product->image_url && $index === 0) {
+                     $product->update(['image_url' => route('images.products', $productImage->id)]);
+                }
+            }
         }
 
         $product->update($validated);

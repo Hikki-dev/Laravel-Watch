@@ -38,6 +38,7 @@ class User extends Authenticatable
         'is_active',
         'stripe_account_id',
         'stripe_account_enabled',
+        'profile_photo_data',
     ];
 
     /**

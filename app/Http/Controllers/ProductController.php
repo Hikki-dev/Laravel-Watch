@@ -96,20 +96,23 @@ class ProductController extends Controller
         $product = Product::create($validated);
 
         // 5. Handle Image Uploads
+        // 5. Handle Image Uploads
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public'); // Save file to storage/app/public/products
+                $path = $image->store('products', 'public');
+                $fileContent = file_get_contents($image->getRealPath());
                 
                 // Create database record for the image
-                $product->images()->create([
+                $productImage = $product->images()->create([
                     'image_path' => 'storage/' . $path,
-                    'is_primary' => $index === 0, // First image is primary
+                    'image_data' => $fileContent, // Store binary
+                    'is_primary' => $index === 0,
                     'sort_order' => $index,
                 ]);
                 
-                // Legacy support: Keep main image in 'image_url' column too
+                // Update legacy main image to point to serving route
                 if ($index === 0) {
-                    $product->update(['image_url' => 'storage/' . $path]);
+                    $product->update(['image_url' => route('images.products', $productImage->id)]);
                 }
             }
         }
@@ -192,17 +195,18 @@ class ProductController extends Controller
 
             foreach ($request->file('images') as $index => $image) {
                 $path = $image->store('products', 'public');
+                $fileContent = file_get_contents($image->getRealPath());
                 
-                $product->images()->create([
+                $productImage = $product->images()->create([
                     'image_path' => 'storage/' . $path,
-                    'is_primary' => false, // New images are not primary by default unless logic changes
+                    'image_data' => $fileContent,
+                    'is_primary' => false,
                     'sort_order' => $index,
                 ]);
 
                 // Update legacy main image if it was empty or we want to override
-                // For simplicity, if no image existed, make this the main one
                 if (!$product->image_url && $index === 0) {
-                     $product->update(['image_url' => 'storage/' . $path]);
+                     $product->update(['image_url' => route('images.products', $productImage->id)]);
                 }
             }
         }

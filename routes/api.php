@@ -3,9 +3,15 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// Public Auth Routes
 Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
 Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
 
+// Public Product Routes
+Route::get('/products', [\App\Http\Controllers\Api\ProductController::class, 'index']);
+Route::get('/products/{id}', [\App\Http\Controllers\Api\ProductController::class, 'show']);
+
+// Authenticated Routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
     Route::get('/user', function (Request $request) {
@@ -57,14 +63,55 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/seller/stripe/connect', [\App\Http\Controllers\Api\StripeConnectController::class, 'connect']);
 });
 
-Route::get('/products', [\App\Http\Controllers\Api\ProductController::class, 'index']);
-Route::get('/products/{id}', [\App\Http\Controllers\Api\ProductController::class, 'show']);
 
+// ====================================================
+// [SSP Integration] - FULL User Management CRUD
+// ====================================================
 
-// [SSP Integration] - User Management
+// 1. Get All Users
 Route::get('/users', function () {
     return response()->json(['data' => \App\Models\User::all()]);
 });
+
+// 2. Create User (Admin/Manual Add)
+Route::post('/users', function (Request $request) {
+    // Basic validation
+    $request->validate([
+        'name' => 'required|string',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:6',
+        'role' => 'nullable|string'
+    ]);
+
+    try {
+        $user = \App\Models\User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => $request->role ?? 'customer',
+        ]);
+        return response()->json($user, 201);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 400); 
+    }
+});
+
+// 3. Update User
+Route::put('/users/{id}', function (Request $request, $id) {
+    $user = \App\Models\User::find($id);
+    if (!$user) return response()->json(['message' => 'User not found'], 404);
+    
+    $user->update($request->only(['name', 'email', 'role']));
+    
+    // Only update password if provided
+    if ($request->filled('password')) {
+        $user->update(['password' => bcrypt($request->password)]);
+    }
+    
+    return response()->json($user);
+});
+
+// 4. Delete User
 Route::delete('/users/{id}', function ($id) {
     \App\Models\User::destroy($id);
     return response()->json(['message' => 'User deleted']);

@@ -127,3 +127,7 @@ Route::get('/debug-vite', function () {
     ];
 });
 
+// Image Serving Routes
+Route::get('/images/products/{id}', [\App\Http\Controllers\ImageController::class, 'showProductImage'])->name('images.products');
+Route::get('/images/users/{id}', [\App\Http\Controllers\ImageController::class, 'showUserImage'])->name('images.users');
+

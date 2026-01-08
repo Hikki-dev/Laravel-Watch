@@ -40,13 +40,20 @@ class ProfileController extends Controller
         $user = $request->user();
 
         if (isset($request->photo)) {
-            $user->updateProfilePhoto($request->file('photo'));
+            // $user->updateProfilePhoto($request->file('photo')); 
+            // Custom DB Storage logic
+            $file = $request->file('photo');
+            $user->forceFill([
+                'profile_photo_path' => 'profile-photos/' . $file->hashName(), // Keep path just in case
+                'profile_photo_data' => file_get_contents($file->getRealPath()),
+            ])->save();
         }
 
         return response()->json([
             'status' => 'success',
             'message' => 'Profile photo uploaded successfully',
-            'photo_url' => $user->profile_photo_url,
+            // Return our custom serving route
+            'photo_url' => route('images.users', $user->id),
         ]);
     }
 }
