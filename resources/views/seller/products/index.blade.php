@@ -27,10 +27,15 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="h-10 w-10 flex-shrink-0">
-                                                @if($product->image_url)
-                                                    <img class="h-10 w-10 rounded-full object-cover" src="{{ asset($product->image_url) }}" alt="">
+                                                @if($product->image_url || $product->image)
+                                                    <img class="h-10 w-10 rounded-full object-cover" 
+                                                         src="{{ str_starts_with($product->image_url ?? $product->image, 'http') ? ($product->image_url ?? $product->image) : asset('storage/' . ($product->image_url ?? $product->image)) }}" 
+                                                         alt="{{ $product->name }}"
+                                                         onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($product->name) }}&color=7F9CF5&background=EBF4FF'">
                                                 @else
-                                                    <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-500">Img</div>
+                                                     <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                                                        {{ substr($product->name, 0, 1) }}
+                                                    </div>
                                                 @endif
                                             </div>
                                             <div class="ml-4">
@@ -49,8 +54,9 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            {{ $product->status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                            {{ ucfirst($product->status) }}
+                                            {{ $product->status === 'approved' ? 'bg-green-100 text-green-800' : 
+                                               ($product->status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                                            {{ $product->status === 'pending' ? 'Waiting Approval' : ucfirst($product->status) }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">

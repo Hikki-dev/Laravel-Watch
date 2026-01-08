@@ -181,6 +181,32 @@ class ProductController extends Controller
             $validated['status'] = 'pending';
         }
 
+        if ($request->hasFile('images')) {
+             $request->validate([
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+
+            // Optional: Delete old images if you want a complete replace, or just append
+            // For now, let's append new images. If you want to replace, uncomment below:
+            // $product->images()->delete(); 
+
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('products', 'public');
+                
+                $product->images()->create([
+                    'image_path' => 'storage/' . $path,
+                    'is_primary' => false, // New images are not primary by default unless logic changes
+                    'sort_order' => $index,
+                ]);
+
+                // Update legacy main image if it was empty or we want to override
+                // For simplicity, if no image existed, make this the main one
+                if (!$product->image_url && $index === 0) {
+                     $product->update(['image_url' => 'storage/' . $path]);
+                }
+            }
+        }
+
         $product->update($validated);
 
         $message = auth()->user()->role === 'seller' 

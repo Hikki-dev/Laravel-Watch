@@ -12,9 +12,11 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ url('/') }}" :active="request()->is('/')">
-                        {{ __('Home') }}
-                    </x-nav-link>
+                    @if(!Auth::check() || !Auth::user()->isAdmin())
+                        <x-nav-link href="{{ url('/') }}" :active="request()->is('/')">
+                            {{ __('Home') }}
+                        </x-nav-link>
+                    @endif
 
                     @if (!Auth::check() || Auth::user()->role === 'customer')
                         <x-nav-link href="{{ route('categories.index') }}" :active="request()->routeIs('categories.*')">
@@ -44,11 +46,20 @@
 
                     @auth
                         @if (Auth::user()->isAdmin())
-                            <x-nav-link href="{{ route('products.index') }}" :active="request()->routeIs('products.*')">
-                                {{ __('Products') }}
+                            <x-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
+                                {{ __('Dashboard') }}
                             </x-nav-link>
-                             <x-nav-link href="{{ route('categories.index') }}" :active="request()->routeIs('categories.*')">
-                                {{ __('Categories') }}
+                            <x-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.index')">
+                                {{ __('Users') }}
+                            </x-nav-link>
+                            <x-nav-link href="{{ route('admin.orders.index') }}" :active="request()->routeIs('admin.orders.*')">
+                                {{ __('Orders') }}
+                            </x-nav-link>
+                            <x-nav-link href="{{ route('admin.products.approvals') }}" :active="request()->routeIs('admin.products.approvals')">
+                                {{ __('Approvals') }}
+                            </x-nav-link>
+                            <x-nav-link href="{{ route('products.index') }}" :active="request()->routeIs('products.index')">
+                                {{ __('Products') }}
                             </x-nav-link>
                         @endif
                     @endauth
@@ -127,9 +138,11 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ url('/') }}" :active="request()->is('/')">
-                {{ __('Home') }}
-            </x-responsive-nav-link>
+            @if(!Auth::check() || !Auth::user()->isAdmin())
+                <x-responsive-nav-link href="{{ url('/') }}" :active="request()->is('/')">
+                    {{ __('Home') }}
+                </x-responsive-nav-link>
+            @endif
              @if (!Auth::check() || Auth::user()->role === 'customer')
                 <x-responsive-nav-link href="{{ route('categories.index') }}">
                     {{ __('Brands') }}
@@ -140,8 +153,17 @@
             @endif
              @auth
                 @if (Auth::user()->isAdmin())
-                    <x-responsive-nav-link href="{{ route('products.index') }}">
-                        {{ __('Products') }}
+                    <x-responsive-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.index')">
+                        {{ __('Users') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('admin.orders.index') }}" :active="request()->routeIs('admin.orders.*')">
+                        {{ __('Orders') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('admin.products.approvals') }}" :active="request()->routeIs('admin.products.approvals')">
+                        {{ __('Approvals') }}
                     </x-responsive-nav-link>
                 @endif
             @endauth

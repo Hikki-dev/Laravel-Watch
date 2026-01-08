@@ -46,6 +46,15 @@ class AdminController extends Controller
     }
 
     /**
+     * Show the specified order details.
+     */
+    public function showOrder(Order $order)
+    {
+        $order->load(['user', 'items.product', 'items.product.seller']);
+        return view('admin.orders.show', compact('order'));
+    }
+
+    /**
      * Show list of products waiting for approval.
      */
     public function approvals()

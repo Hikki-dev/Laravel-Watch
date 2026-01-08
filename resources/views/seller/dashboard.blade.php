@@ -22,6 +22,11 @@
                     <div class="text-2xl font-bold text-gray-900 mt-2">{{ $stats['pending_products'] }}</div>
                 </div>
             </div>
+            
+            <!-- Order Management (Realtime) -->
+            <div class="mb-8">
+                <livewire:seller.order-management />
+            </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- My Recent Products -->

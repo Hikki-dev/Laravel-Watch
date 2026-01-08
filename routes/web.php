@@ -5,6 +5,15 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
+    if (Auth::check()) {
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        if (auth()->user()->role === 'seller') {
+            return redirect()->route('seller.dashboard');
+        }
+    }
+
     $categories = \Illuminate\Support\Facades\Cache::remember('home_categories', 60 * 60, function () {
         return \App\Models\Category::all();
     });
@@ -34,6 +43,12 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        if (auth()->user()->role === 'seller') {
+            return redirect()->route('seller.dashboard');
+        }
         return view('dashboard');
     })->name('dashboard');
 });
@@ -61,6 +76,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/users', [\App\Http\Controllers\AdminController::class, 'users'])->name('users.index');
     Route::delete('/users/{user}', [\App\Http\Controllers\AdminController::class, 'destroy'])->name('users.destroy');
     Route::get('/orders', [\App\Http\Controllers\AdminController::class, 'orders'])->name('orders.index');
+    Route::get('/orders/{order}', [\App\Http\Controllers\AdminController::class, 'showOrder'])->name('orders.show');
     Route::get('/approvals', [\App\Http\Controllers\AdminController::class, 'approvals'])->name('products.approvals');
     Route::post('/products/{product}/approve', [\App\Http\Controllers\AdminController::class, 'approve'])->name('products.approve');
     Route::post('/products/{product}/reject', [\App\Http\Controllers\AdminController::class, 'reject'])->name('products.reject');

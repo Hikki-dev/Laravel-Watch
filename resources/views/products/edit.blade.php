@@ -18,7 +18,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('products.update', $product) }}" method="POST">
+                <form action="{{ route('products.update', $product) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -60,6 +60,11 @@
                         <div>
                             <label for="stock_quantity" class="block text-sm font-medium text-gray-700">Stock Quantity</label>
                             <input type="number" name="stock_quantity" id="stock_quantity" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('stock_quantity', $product->stock_quantity) }}" required>
+                        </div>
+                        
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Images (Leave blank to keep current)</label>
+                            <input type="file" name="images[]" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                         </div>
                     </div>
 
