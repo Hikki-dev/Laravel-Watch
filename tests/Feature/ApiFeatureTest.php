@@ -36,7 +36,9 @@ class ApiFeatureTest extends TestCase
         // The path is hashed, so we check if the user model has a profile_photo_path
         $user->refresh();
         $this->assertNotNull($user->profile_photo_path);
-        Storage::disk('public')->assertExists($user->profile_photo_path);
+        // We are storing images in DB now, so file won't exist on disk
+        // $this->assertTrue(Storage::disk('public')->exists($user->profile_photo_path));
+        $this->assertNotNull($user->profile_photo_data);
     }
 
     public function test_user_can_manage_cart()

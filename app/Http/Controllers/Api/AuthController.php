@@ -30,9 +30,11 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role ?? 'customer', // Added role support in registration
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $abilities = $this->getAbilities($user);
+        $token = $user->createToken('auth_token', $abilities)->plainTextToken;
 
         return response()->json([
             'status' => 'success',
@@ -41,6 +43,7 @@ class AuthController extends Controller
                 'user' => $user,
                 'access_token' => $token,
                 'token_type' => 'Bearer',
+                'abilities' => $abilities
             ]
         ], 201);
     }
@@ -68,7 +71,8 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $abilities = $this->getAbilities($user);
+        $token = $user->createToken('auth_token', $abilities)->plainTextToken;
 
         return response()->json([
             'status' => 'success',
@@ -77,8 +81,23 @@ class AuthController extends Controller
                 'user' => $user,
                 'access_token' => $token,
                 'token_type' => 'Bearer',
+                'abilities' => $abilities
             ]
         ]);
+    }
+
+    /**
+     * Get Sanctum abilities based on user role
+     */
+    private function getAbilities(User $user)
+    {
+        if ($user->role === 'admin') {
+            return ['*'];
+        } elseif ($user->role === 'seller') {
+            return ['product:create', 'product:update', 'product:delete'];
+        } else {
+            return ['order:create'];
+        }
     }
 
     public function logout(Request $request)

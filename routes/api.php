@@ -39,8 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Checkout Route
     Route::post('/checkout', [\App\Http\Controllers\Api\CheckoutController::class, 'store']);
 
-    // Seller Product Management
-    Route::prefix('seller')->group(function () {
+    // Seller Product Management - Requires specific abilities
+    Route::middleware(['ability:product:create,product:update,product:delete'])->prefix('seller')->group(function () {
         Route::post('/products', [\App\Http\Controllers\Api\ProductController::class, 'store']);
         Route::put('/products/{product}', [\App\Http\Controllers\Api\ProductController::class, 'update']);
         Route::delete('/products/{product}', [\App\Http\Controllers\Api\ProductController::class, 'destroy']);
@@ -60,59 +60,62 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Seller - Stripe Connect
+    // Seller - Stripe Connect
     Route::get('/seller/stripe/connect', [\App\Http\Controllers\Api\StripeConnectController::class, 'connect']);
-});
 
+    // ====================================================
+    // [SSP Integration] - FULL User Management CRUD
+    // ====================================================
 
-// ====================================================
-// [SSP Integration] - FULL User Management CRUD
-// ====================================================
+    // User Management - ADMIN ONLY (ability:*)
+    Route::middleware(['ability:*'])->group(function () {
+        // 1. Get All Users
+        Route::get('/users', function () {
+            return response()->json(['data' => \App\Models\User::all()]);
+        });
 
-// 1. Get All Users
-Route::get('/users', function () {
-    return response()->json(['data' => \App\Models\User::all()]);
-});
+        // 2. Create User (Admin/Manual Add)
+        Route::post('/users', function (Request $request) {
+            // Basic validation
+            $request->validate([
+                'name' => 'required|string',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:6',
+                'role' => 'nullable|string'
+            ]);
 
-// 2. Create User (Admin/Manual Add)
-Route::post('/users', function (Request $request) {
-    // Basic validation
-    $request->validate([
-        'name' => 'required|string',
-        'email' => 'required|email|unique:users',
-        'password' => 'required|min:6',
-        'role' => 'nullable|string'
-    ]);
+            try {
+                $user = \App\Models\User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => bcrypt($request->password),
+                    'role' => $request->role ?? 'customer',
+                ]);
+                return response()->json($user, 201);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 400); 
+            }
+        });
 
-    try {
-        $user = \App\Models\User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'role' => $request->role ?? 'customer',
-        ]);
-        return response()->json($user, 201);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 400); 
-    }
-});
+        // 3. Update User
+        Route::put('/users/{id}', function (Request $request, $id) {
+            $user = \App\Models\User::find($id);
+            if (!$user) return response()->json(['message' => 'User not found'], 404);
+            
+            $user->update($request->only(['name', 'email', 'role']));
+            
+            // Only update password if provided
+            if ($request->filled('password')) {
+                $user->update(['password' => bcrypt($request->password)]);
+            }
+            
+            return response()->json($user);
+        });
 
-// 3. Update User
-Route::put('/users/{id}', function (Request $request, $id) {
-    $user = \App\Models\User::find($id);
-    if (!$user) return response()->json(['message' => 'User not found'], 404);
-    
-    $user->update($request->only(['name', 'email', 'role']));
-    
-    // Only update password if provided
-    if ($request->filled('password')) {
-        $user->update(['password' => bcrypt($request->password)]);
-    }
-    
-    return response()->json($user);
-});
-
-// 4. Delete User
-Route::delete('/users/{id}', function ($id) {
-    \App\Models\User::destroy($id);
-    return response()->json(['message' => 'User deleted']);
+        // 4. Delete User
+        Route::delete('/users/{id}', function ($id) {
+            \App\Models\User::destroy($id);
+            return response()->json(['message' => 'User deleted']);
+        });
+    });
 });

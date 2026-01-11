@@ -12,6 +12,7 @@ class StripeConnectController extends Controller
 {
     public function connect()
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         if ($user->stripe_account_id && $user->stripe_account_enabled) {
