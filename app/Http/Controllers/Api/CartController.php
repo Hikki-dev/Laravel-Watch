@@ -86,4 +86,50 @@ class CartController extends Controller
             'message' => 'Item removed from cart'
         ]);
     }
+    // Existing methods... use updateByProduct instead of update and destroyByProduct instead of destroy for easier Mobile integration
+
+    public function updateByProduct(Request $request, $productId)
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1|max:10',
+        ]);
+
+        $cart = Auth::user()->cart()->where('product_id', $productId)->first();
+
+        if (!$cart) {
+             return response()->json(['status' => 'error', 'message' => 'Scart item not found'], 404);
+        }
+
+        $cart->update(['quantity' => $request->quantity]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cart item updated'
+        ]);
+    }
+
+    public function destroyByProduct($productId)
+    {
+        $cart = Auth::user()->cart()->where('product_id', $productId)->first();
+
+        if (!$cart) {
+            return response()->json(['status' => 'error', 'message' => 'Cart item not found'], 404);
+        }
+
+        $cart->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Item removed from cart'
+        ]);
+    }
+
+    public function clear()
+    {
+        Auth::user()->cart()->delete();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cart cleared'
+        ]);
+    }
 }

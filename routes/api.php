@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 // Public Auth Routes
 Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
 Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
+Route::post('/auth/google', [\App\Http\Controllers\Api\AuthController::class, 'loginWithGoogle']);
 
 // Public Product Routes
 Route::get('/products', [\App\Http\Controllers\Api\ProductController::class, 'index']);
@@ -23,6 +24,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/cart/add/{product}', [\App\Http\Controllers\Api\CartController::class, 'store']);
     Route::patch('/cart/{cart}', [\App\Http\Controllers\Api\CartController::class, 'update']);
     Route::delete('/cart/{cart}', [\App\Http\Controllers\Api\CartController::class, 'destroy']);
+    
+    // Mobile/Granular Cart Routes
+    Route::patch('/cart/product/{product}', [\App\Http\Controllers\Api\CartController::class, 'updateByProduct']);
+    Route::delete('/cart/product/{product}', [\App\Http\Controllers\Api\CartController::class, 'destroyByProduct']);
+    Route::delete('/cart/clear', [\App\Http\Controllers\Api\CartController::class, 'clear']);
 
     // Order Routes
     Route::get('/orders', [\App\Http\Controllers\Api\OrderController::class, 'index']);
@@ -47,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Admin Routes
-    Route::prefix('admin')->group(function () {
+    Route::middleware(['ability:*'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Api\AdminController::class, 'dashboard']);
         Route::get('/approvals', [\App\Http\Controllers\Api\AdminController::class, 'approvals']);
         Route::post('/products/{product}/approve', [\App\Http\Controllers\Api\AdminController::class, 'approve']);

@@ -39,6 +39,7 @@ class User extends Authenticatable
         'stripe_account_id',
         'stripe_account_enabled',
         'profile_photo_data',
+        'google_id',
     ];
 
     /**
