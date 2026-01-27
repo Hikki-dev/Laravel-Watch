@@ -42,6 +42,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/products/{product}/reviews', [\App\Http\Controllers\Api\ReviewController::class, 'store']);
     Route::delete('/reviews/{review}', [\App\Http\Controllers\Api\ReviewController::class, 'destroy']);
 
+    // Favorites Routes
+    Route::get('/favorites', [\App\Http\Controllers\Api\FavoriteController::class, 'index']);
+    Route::post('/favorites', [\App\Http\Controllers\Api\FavoriteController::class, 'store']); // Toggle
+    Route::delete('/favorites/{productId}', [\App\Http\Controllers\Api\FavoriteController::class, 'destroy']);
+
     // Checkout Route
     Route::post('/checkout', [\App\Http\Controllers\Api\CheckoutController::class, 'store']);
 
