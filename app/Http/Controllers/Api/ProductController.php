@@ -13,7 +13,18 @@ class ProductController extends Controller
 
     public function index()
     {
-        return response()->json(['data' => Product::all()]);
+        return response()->json(['data' => Product::with('images')->get()]);
+    }
+
+    public function show($id)
+    {
+        $product = Product::with(['images', 'category', 'seller', 'reviews.user'])->find($id);
+
+        if (!$product) {
+            return response()->json(['status' => 'error', 'message' => 'Product not found'], 404);
+        }
+
+        return response()->json(['status' => 'success', 'data' => $product]);
     }
     /**
      * Store a newly created product in storage.
