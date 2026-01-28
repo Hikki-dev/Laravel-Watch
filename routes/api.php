@@ -120,6 +120,7 @@ Route::middleware('auth:sanctum')->group(function () {
                     'email' => $request->email,
                     'password' => bcrypt($request->password),
                     'role' => $request->role ?? 'customer',
+                    'is_active' => $request->boolean('is_active', true),
                 ]);
                 return response()->json($user, 201);
             } catch (\Exception $e) {
@@ -132,7 +133,7 @@ Route::middleware('auth:sanctum')->group(function () {
             $user = \App\Models\User::find($id);
             if (!$user) return response()->json(['message' => 'User not found'], 404);
             
-            $user->update($request->only(['name', 'email', 'role']));
+            $user->update($request->only(['name', 'email', 'role', 'is_active']));
             
             // Only update password if provided
             if ($request->filled('password')) {
