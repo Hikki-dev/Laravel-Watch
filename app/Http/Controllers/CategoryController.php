@@ -21,20 +21,38 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->isAdmin()) {
+        // Allow Admin and Seller
+        if (!auth()->user()->isAdmin() && auth()->user()->role !== 'seller') {
             abort(403, 'Unauthorized action.');
         }
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_url' => 'nullable|url',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+        
+        // Handle Image
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images/brands'), $imageName);
+            $validated['image'] = $imageName;
+        } elseif ($request->filled('image_url')) {
+            // Save full URL. View must handle this distinction.
+            $validated['image'] = $request->image_url;
+        }
 
         Category::create($validated);
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+        // Redirect based on role
+        if (auth()->user()->role === 'seller') {
+            return redirect()->route('seller.dashboard')->with('success', 'Brand created successfully.');
+        }
+
+        return redirect()->route('categories.index')->with('success', 'Brand created successfully.');
     }
 
     public function show(Category $category)
@@ -56,15 +74,31 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_url' => 'nullable|url',
         ]);
 
         if ($request->has('name') && $request->name !== $category->name) {
              $validated['slug'] = Str::slug($validated['name']);
         }
 
+        // Handle Image
+        if ($request->hasFile('image')) {
+            // Delete old image if it exists and is a file
+            if ($category->image && file_exists(public_path('images/brands/' . $category->image))) {
+                unlink(public_path('images/brands/' . $category->image));
+            }
+
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images/brands'), $imageName);
+            $validated['image'] = $imageName;
+        } elseif ($request->filled('image_url')) {
+             $validated['image'] = $request->image_url;
+        }
+
         $category->update($validated);
 
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
+        return redirect()->route('categories.index')->with('success', 'Brand updated successfully.');
     }
 
     public function destroy(Category $category)

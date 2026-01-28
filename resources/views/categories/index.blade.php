@@ -26,7 +26,11 @@
                 <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6 text-center group hover:shadow-xl transition duration-300">
                     <div class="w-full h-48 bg-gray-100 rounded-lg mb-4 flex items-center justify-center p-6">
                         @if($category->image)
-                            <img src="{{ asset('images/brands/' . $category->image) }}" alt="{{ $category->name }}" class="max-w-full max-h-full object-contain">
+                            @if(Str::startsWith($category->image, ['http', 'https']))
+                                <img src="{{ $category->image }}" alt="{{ $category->name }}" class="max-w-full max-h-full object-contain">
+                            @else
+                                <img src="{{ asset('images/brands/' . $category->image) }}" alt="{{ $category->name }}" class="max-w-full max-h-full object-contain">
+                            @endif
                         @else
                              <!-- Placeholder or Text Logo -->
                             <span class="text-2xl font-luxury text-gray-400">{{ $category->name }}</span>
