@@ -12,6 +12,24 @@ Route::post('/auth/google', [\App\Http\Controllers\Api\AuthController::class, 'l
 Route::get('/products', [\App\Http\Controllers\Api\ProductController::class, 'index']);
 Route::get('/products/{id}', [\App\Http\Controllers\Api\ProductController::class, 'show']);
 
+// Image Proxy Route to fix CORS on Web
+Route::get('/image-proxy', function (Request $request) {
+    $path = $request->query('path');
+    if (!$path) return response()->json(['error' => 'Path required'], 400);
+
+    // Security: Prevent accessing files outside public folder
+    if (str_contains($path, '..') || str_starts_with($path, '/')) {
+        return response()->json(['error' => 'Invalid path'], 403);
+    }
+
+    $fullPath = public_path($path);
+    if (!file_exists($fullPath)) {
+        return response()->json(['error' => 'File not found'], 404);
+    }
+
+    return response()->file($fullPath);
+});
+
 // Authenticated Routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
