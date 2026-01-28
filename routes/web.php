@@ -54,7 +54,8 @@ Route::middleware([
         if (auth()->user()->role === 'seller') {
             return redirect()->route('seller.dashboard');
         }
-        return view('dashboard');
+        $recentOrders = auth()->user()->orders()->latest()->take(5)->get();
+        return view('dashboard', compact('recentOrders'));
     })->name('dashboard');
 });
 
