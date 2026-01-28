@@ -115,6 +115,7 @@ class ProductController extends Controller
                 if ($index === 0) {
                     $product->update(['image_url' => route('images.products', $productImage->id)]);
                 }
+            }
         } elseif ($request->filled('image_url')) {
              $product->update(['image_url' => $request->image_url]);
         }
@@ -211,6 +212,7 @@ class ProductController extends Controller
                 if (!$product->image_url && $index === 0) {
                      $product->update(['image_url' => route('images.products', $productImage->id)]);
                 }
+            }
         } elseif ($request->filled('image_url')) {
             $product->update(['image_url' => $request->image_url]);
         }
