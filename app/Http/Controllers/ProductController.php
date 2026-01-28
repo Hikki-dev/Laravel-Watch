@@ -82,6 +82,7 @@ class ProductController extends Controller
             'brand' => 'required|string',
             'model' => 'required|string',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Allow multiple images
+            'image_url' => 'nullable|url',
         ]);
 
         // 3. Prepare Data
@@ -114,7 +115,8 @@ class ProductController extends Controller
                 if ($index === 0) {
                     $product->update(['image_url' => route('images.products', $productImage->id)]);
                 }
-            }
+        } elseif ($request->filled('image_url')) {
+             $product->update(['image_url' => $request->image_url]);
         }
 
         // 6. Redirect User
@@ -173,6 +175,7 @@ class ProductController extends Controller
             'stock_quantity' => 'required|integer',
             'brand' => 'required|string',
             'model' => 'required|string',
+            'image_url' => 'nullable|url',
         ]);
 
         if ($request->has('name') && $request->name !== $product->name) {
@@ -208,7 +211,8 @@ class ProductController extends Controller
                 if (!$product->image_url && $index === 0) {
                      $product->update(['image_url' => route('images.products', $productImage->id)]);
                 }
-            }
+        } elseif ($request->filled('image_url')) {
+            $product->update(['image_url' => $request->image_url]);
         }
 
         $product->update($validated);

@@ -70,6 +70,12 @@
                                 file:bg-indigo-50 file:text-indigo-700
                                 hover:file:bg-indigo-100" accept="image/*">
                             <p class="mt-1 text-sm text-gray-500">You can select multiple images. The first one will be the primary image.</p>
+                            
+                            <div class="mt-4">
+                                <label for="image_url" class="block text-sm font-medium text-gray-700">Or Paste Image URL</label>
+                                <input type="url" name="image_url" id="image_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('image_url') }}" placeholder="https://example.com/image.jpg">
+                                <p class="mt-1 text-sm text-gray-500">If both are provided, uploaded images take precedence.</p>
+                            </div>
                         </div>
                     </div>
 
