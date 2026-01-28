@@ -46,6 +46,7 @@ class ProductController extends Controller
             'brand' => 'required|string',
             'model' => 'required|string',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_url' => 'nullable|url',
         ]);
 
         // 3. Prepare Data
@@ -101,6 +102,7 @@ class ProductController extends Controller
             'stock_quantity' => 'sometimes|required|integer',
             'brand' => 'sometimes|required|string',
             'model' => 'sometimes|required|string',
+            'image_url' => 'nullable|url',
         ]);
 
         if ($request->has('name') && $request->name !== $product->name) {

@@ -78,6 +78,31 @@ class ProductCrudTest extends TestCase
         $this->assertDatabaseHas('products', ['name' => 'Rolex Submariner']);
     }
 
+    public function test_seller_can_create_product_with_image_url()
+    {
+        $seller = User::factory()->create(['role' => 'seller']);
+        $category = Category::factory()->create();
+        
+        Sanctum::actingAs($seller, ['product:create']);
+
+        $response = $this->postJson('/api/seller/products', [
+            'name' => 'Omega Speedmaster',
+            'description' => 'Moonwatch',
+            'price' => 7000,
+            'stock_quantity' => 10,
+            'brand' => 'Omega',
+            'model' => 'Speedmaster',
+            'category_id' => $category->id,
+            'image_url' => 'https://example.com/omega.jpg'
+        ]);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('products', [
+            'name' => 'Omega Speedmaster',
+            'image_url' => 'https://example.com/omega.jpg'
+        ]);
+    }
+
     public function test_seller_can_update_own_product()
     {
         $seller = User::factory()->create(['role' => 'seller']);
