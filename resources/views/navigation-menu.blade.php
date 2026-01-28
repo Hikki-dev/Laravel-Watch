@@ -98,9 +98,11 @@
                                     {{ __('Profile') }}
                                 </x-dropdown-link>
 
-                                <x-dropdown-link href="{{ route('orders.index') }}">
-                                    {{ __('My Orders') }}
-                                </x-dropdown-link>
+                                @if(Auth::user()->role !== 'admin')
+                                    <x-dropdown-link href="{{ route('orders.index') }}">
+                                        {{ __('My Orders') }}
+                                    </x-dropdown-link>
+                                @endif
 
                                 <div class="border-t border-gray-200"></div>
 
