@@ -12,10 +12,25 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cartItems = Auth::user()->cart()->with('product')->get();
+        $cartItems = Auth::user()->cart()->with(['product.images'])->get();
+        // Calculate subtotal, etc.
         $subtotal = $cartItems->sum(function ($item) {
             return $item->product->price * $item->quantity;
         });
+        
+        // Transform cart items to include primary image
+        $cartItems->transform(function ($item) {
+            $product = $item->product;
+            // logic to get first image or fallback
+             $primaryImage = $product->images->first() ? $product->images->first()->image_path : $product->image_url;
+             if ($primaryImage && !str_starts_with($primaryImage, 'http')) {
+                 $primaryImage = asset('storage/' . $primaryImage);
+             }
+             
+             $item->product->primary_image = $primaryImage;
+             return $item;
+        });
+
         $tax = $subtotal * 0.08;
         $total = $subtotal + $tax;
 

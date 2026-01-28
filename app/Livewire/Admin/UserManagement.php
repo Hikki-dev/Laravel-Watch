@@ -63,8 +63,13 @@ class UserManagement extends Component
     public function edit(User $user)
     {
         $this->user = $user;
-        $this->state = $user->toArray();
-        $this->state['password'] = ''; // Don't show password
+        $this->state = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'is_active' => (bool) $user->is_active,
+            'password' => '',
+        ];
         $this->confirmingUserManagement = true;
     }
 
@@ -82,7 +87,9 @@ class UserManagement extends Component
         ]);
 
         $this->confirmingUserManagement = false;
-        $this->dispatch('saved'); // For sweetalert or flash message
+        $this->dispatch('saved'); 
+        session()->flash('flash.banner', 'User created successfully.');
+        session()->flash('flash.bannerStyle', 'success');
     }
 
     public function update()
@@ -110,6 +117,8 @@ class UserManagement extends Component
 
         $this->confirmingUserManagement = false;
         $this->dispatch('saved');
+        session()->flash('flash.banner', 'User updated successfully.');
+        session()->flash('flash.bannerStyle', 'success');
     }
 
     public function confirmUserDeletion($userId)
@@ -128,5 +137,7 @@ class UserManagement extends Component
 
         $this->confirmingUserDeletion = false;
         $this->reset('userIdBeingDeleted');
+        session()->flash('flash.banner', 'User deleted successfully.');
+        session()->flash('flash.bannerStyle', 'success');
     }
 }
