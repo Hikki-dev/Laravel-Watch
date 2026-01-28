@@ -81,7 +81,7 @@ class UserManagement extends Component
         User::create([
             'name' => $this->state['name'],
             'email' => $this->state['email'],
-            'password' => Hash::make($this->state['password']),
+            'password' => $this->state['password'],
             'role' => $this->state['role'],
             'is_active' => $this->state['is_active'],
         ]);
@@ -110,7 +110,7 @@ class UserManagement extends Component
         ];
 
         if (!empty($this->state['password'])) {
-            $data['password'] = Hash::make($this->state['password']);
+            $data['password'] = $this->state['password'];
         }
 
         $this->user->update($data);

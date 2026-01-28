@@ -118,7 +118,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 $user = \App\Models\User::create([
                     'name' => $request->name,
                     'email' => $request->email,
-                    'password' => bcrypt($request->password),
+                    'password' => $request->password,
                     'role' => $request->role ?? 'customer',
                     'is_active' => $request->boolean('is_active', true),
                 ]);
@@ -137,7 +137,7 @@ Route::middleware('auth:sanctum')->group(function () {
             
             // Only update password if provided
             if ($request->filled('password')) {
-                $user->update(['password' => bcrypt($request->password)]);
+                $user->update(['password' => $request->password]);
             }
             
             return response()->json($user);
