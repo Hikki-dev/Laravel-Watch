@@ -11,6 +11,7 @@ Route::post('/auth/google', [\App\Http\Controllers\Api\AuthController::class, 'l
 // Public Product Routes
 Route::get('/products', [\App\Http\Controllers\Api\ProductController::class, 'index']);
 Route::get('/products/{id}', [\App\Http\Controllers\Api\ProductController::class, 'show']);
+Route::get('/brands', [\App\Http\Controllers\Api\BrandController::class, 'index']);
 
 // Image Proxy Route to fix CORS on Web
 Route::get('/image-proxy', function (Request $request) {
