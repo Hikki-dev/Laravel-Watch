@@ -60,8 +60,10 @@ class AdminController extends Controller
     public function approvals()
     {
         // Fetch products where status is 'pending', including seller info
-        $pendingProducts = Product::where('status', 'pending')->with('seller')->latest()->paginate(10);
-        return view('admin.products.approvals', compact('pendingProducts'));
+        $pendingProducts = Product::where('status', 'pending')->with('seller')->latest()->get();
+        $pendingCategories = \App\Models\Category::where('status', 'pending')->latest()->get();
+        
+        return view('admin.products.approvals', compact('pendingProducts', 'pendingCategories'));
     }
 
     /**
@@ -88,6 +90,30 @@ class AdminController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Product rejected.');
+    }
+
+    /**
+     * Approve a pending category.
+     */
+    public function approveCategory(\App\Models\Category $category)
+    {
+        $category->update([
+            'status' => 'approved',
+        ]);
+
+        return redirect()->back()->with('success', 'Brand approved successfully.');
+    }
+
+    /**
+     * Reject a pending category.
+     */
+    public function rejectCategory(\App\Models\Category $category)
+    {
+        $category->update([
+            'status' => 'rejected',
+        ]);
+
+        return redirect()->back()->with('success', 'Brand rejected.');
     }
     /**
      * Delete a user.

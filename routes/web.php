@@ -20,7 +20,7 @@ Route::get('/', function () {
     }
 
     $categories = \Illuminate\Support\Facades\Cache::remember('home_categories', 60 * 60, function () {
-        return \App\Models\Category::all();
+        return \App\Models\Category::where('status', 'approved')->get();
     });
 
     $featured_products = \Illuminate\Support\Facades\Cache::remember('home_featured_products', 60 * 60, function () {
@@ -85,6 +85,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/approvals', [\App\Http\Controllers\AdminController::class, 'approvals'])->name('products.approvals');
     Route::post('/products/{product}/approve', [\App\Http\Controllers\AdminController::class, 'approve'])->name('products.approve');
     Route::post('/products/{product}/reject', [\App\Http\Controllers\AdminController::class, 'reject'])->name('products.reject');
+    Route::post('/categories/{category}/approve', [\App\Http\Controllers\AdminController::class, 'approveCategory'])->name('categories.approve');
+    Route::post('/categories/{category}/reject', [\App\Http\Controllers\AdminController::class, 'rejectCategory'])->name('categories.reject');
 });
 
 // Seller Routes

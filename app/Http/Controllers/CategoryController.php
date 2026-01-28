@@ -10,7 +10,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::where('status', 'approved')->get();
         return view('categories.index', compact('categories'));
     }
 
@@ -44,6 +44,9 @@ class CategoryController extends Controller
             // Save full URL. View must handle this distinction.
             $validated['image'] = $request->image_url;
         }
+
+        // Set Status: Admin -> Approved, Seller -> Pending
+        $validated['status'] = auth()->user()->isAdmin() ? 'approved' : 'pending';
 
         Category::create($validated);
 
