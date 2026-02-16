@@ -17,6 +17,15 @@ class ProductImage extends Model
         'sort_order',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'image_data',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class);
