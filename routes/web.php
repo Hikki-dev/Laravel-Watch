@@ -139,3 +139,13 @@ Route::get('/debug-vite', function () {
 Route::get('/images/products/{id}', [\App\Http\Controllers\ImageController::class, 'showProductImage'])->name('images.products');
 Route::get('/images/users/{id}', [\App\Http\Controllers\ImageController::class, 'showUserImage'])->name('images.users');
 
+
+// Database Fix Route (Run once on Railway then remove)
+Route::get('/fix-db', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh --seed');
+        return 'Database Fixed Successfully! Tables migrated and seeded.';
+    } catch (\Exception $e) {
+        return 'Error fixing database: ' . $e->getMessage();
+    }
+});
