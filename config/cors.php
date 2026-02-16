@@ -23,6 +23,8 @@ return [
         'https://watchapp-phi.vercel.app', // Flutter Web App
         'http://localhost:3000',
         'http://localhost:8080',
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
         '*', // Allow all for development flexibility (Mobile apps often have no origin or null)
     ],
 
