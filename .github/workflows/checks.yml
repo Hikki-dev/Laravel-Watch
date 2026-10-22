@@ -1,0 +1,55 @@
+name: Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, xml, sqlite3, pdo_sqlite, gd, zip, intl
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install PHP packages
+        run: composer install --no-interaction --no-progress
+      - name: Prepare the settings
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          touch database/database.sqlite
+      - name: Create the tables and the sample shop
+        run: php artisan migrate --seed --force
+      - name: Check that every route loads
+        run: php artisan route:list > /dev/null
+      - name: Build the styles and scripts
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+
+  tests:
+    # The suite has known failures, see docs/Fixing problems.md. It is run so
+    # the numbers are visible on every push, but it does not block a change.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, xml, sqlite3, pdo_sqlite, gd, zip, intl
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: composer install --no-interaction --no-progress
+      - run: cp .env.example .env && php artisan key:generate
+      - run: |
+          npm install --no-audit --no-fund
+          npm run build
+      - run: php artisan test

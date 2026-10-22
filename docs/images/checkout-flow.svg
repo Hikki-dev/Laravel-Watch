@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1550" height="380" viewBox="0 0 1550 380" font-family="Arial, Helvetica, sans-serif" role="img" aria-labelledby="t d">
+<title id="t">From cart to paid order</title><desc id="d">Checkout creates a pending, unpaid order and takes the stock off the shelf, then sends the customer to Stripe Checkout. When Stripe sends them back, the site asks Stripe whether the session is paid, marks the order paid and empties the cart.</desc><defs>
+<marker id="a64748b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#64748b"/></marker>
+<style>.t{font-size:22px;font-weight:700;fill:#0f172a;text-anchor:middle}.s{font-size:16px;fill:#475569;text-anchor:middle}.l{font-size:15px;font-weight:700;fill:#334155;text-anchor:middle}.h{font-size:32px;font-weight:700;fill:#0f172a;text-anchor:middle}.g{font-size:15px;font-weight:700;fill:#94a3b8;letter-spacing:.08em}</style></defs>
+<rect width="1550" height="380" fill="#f8fafc"/>
+<text x="775.0" y="46" class="h">From cart to paid order</text>
+<line x1="266" y1="230" x2="282" y2="230" stroke="#64748b" stroke-width="2.4" marker-end="url(#a64748b)"/>
+<line x1="516" y1="230" x2="532" y2="230" stroke="#64748b" stroke-width="2.4" marker-end="url(#a64748b)"/>
+<line x1="766" y1="230" x2="782" y2="230" stroke="#64748b" stroke-width="2.4" marker-end="url(#a64748b)"/>
+<line x1="1016" y1="230" x2="1032" y2="230" stroke="#64748b" stroke-width="2.4" marker-end="url(#a64748b)"/>
+<line x1="1266" y1="230" x2="1282" y2="230" stroke="#64748b" stroke-width="2.4" marker-end="url(#a64748b)"/>
+<rect x="40" y="180" width="220" height="100" rx="16" fill="#ffffff" stroke="#d4a72c" stroke-width="2.4"/>
+<rect x="40" y="180" width="9" height="100" rx="4" fill="#d4a72c"/>
+<text x="154" y="226" class="t">Cart</text>
+<text x="154" y="252" class="s">items and quantities</text>
+<rect x="290" y="180" width="220" height="100" rx="16" fill="#ffffff" stroke="#d4a72c" stroke-width="2.4"/>
+<rect x="290" y="180" width="9" height="100" rx="4" fill="#d4a72c"/>
+<text x="404" y="226" class="t">Checkout form</text>
+<text x="404" y="252" class="s">address, city, country</text>
+<rect x="540" y="180" width="220" height="100" rx="16" fill="#ffffff" stroke="#ff2d20" stroke-width="2.4"/>
+<rect x="540" y="180" width="9" height="100" rx="4" fill="#ff2d20"/>
+<text x="654" y="226" class="t">Order created</text>
+<text x="654" y="252" class="s">status pending, unpaid</text>
+<rect x="790" y="180" width="220" height="100" rx="16" fill="#ffffff" stroke="#635bff" stroke-width="2.4"/>
+<rect x="790" y="180" width="9" height="100" rx="4" fill="#635bff"/>
+<text x="904" y="226" class="t">Stripe Checkout</text>
+<text x="904" y="252" class="s">card payment page</text>
+<rect x="1040" y="180" width="220" height="100" rx="16" fill="#ffffff" stroke="#635bff" stroke-width="2.4"/>
+<rect x="1040" y="180" width="9" height="100" rx="4" fill="#635bff"/>
+<text x="1154" y="226" class="t">Back to the site</text>
+<text x="1154" y="252" class="s">session checked with Stripe</text>
+<rect x="1290" y="180" width="220" height="100" rx="16" fill="#ffffff" stroke="#16a34a" stroke-width="2.4"/>
+<rect x="1290" y="180" width="9" height="100" rx="4" fill="#16a34a"/>
+<text x="1404" y="226" class="t">Order paid</text>
+<text x="1404" y="252" class="s">cart cleared</text>
+<text x="775.0" y="358" class="s">Tax is 8 percent and is added as its own line on the Stripe page</text>
+</svg>
