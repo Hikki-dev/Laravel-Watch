@@ -75,6 +75,7 @@ The seeder (`database/seeders/LegacyDataSeeder.php`) creates a sample admin, sel
 | `APP_KEY`, `APP_URL`, `APP_ENV`, `APP_DEBUG` | Core. Set `APP_DEBUG=false` in production |
 | `DB_CONNECTION` and `DB_*` (or `DB_URL`, `MYSQL*` on Railway) | Database |
 | `STRIPE_SECRET` | Stripe Checkout and Connect (read with `env()`) |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated origins allowed to call the API from a browser. Defaults to any origin |
 | `FIREBASE_WEB_API_KEY` | Web API key of the Firebase project. Used to verify the ID token on `POST /api/auth/google` |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URL` | Google sign-in on the web |
 | `FIREBASE_CREDENTIALS` | Firebase config (`config/firebase.php`) |
@@ -110,18 +111,17 @@ Feature tests cover registration and login, roles and redirects, API auth and to
 
 ## Deployment
 
+- **Free hosting**: see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). `render.yaml` deploys the Docker image to Render's free plan against a free TiDB Cloud (MySQL) database.
 - **Docker**: the `Dockerfile` builds PHP 8.2, installs Composer and Node dependencies, builds assets with Vite, and `docker-entrypoint.sh` runs `php artisan migrate --force` and `php artisan optimize` before serving on `$PORT`.
 - **Procfile**: `web` clears caches, migrates against the `mysql` connection and runs `php artisan serve`.
-- The production API used by Watch-final runs on Railway with a MySQL database.
 
 ## Known issues and security notes
 
 Read these before exposing the app publicly:
 
 1. **Seeded sample accounts** use a known password. Never seed production.
-2. **`GET /api/products` returns every product**, including pending and rejected ones. Filter by `status` and `is_active` for public listings.
+2. `GET /api/products` lists only approved, active products. Admin tokens see everything.
 3. **Images are stored in the database** (`image_data` columns) and an `/api/image-proxy` route serves files from `public/`. Fine for a prototype, but consider object storage at scale.
-4. `submission.zip` is committed to the repo root. It can be removed.
 
 ## License
 

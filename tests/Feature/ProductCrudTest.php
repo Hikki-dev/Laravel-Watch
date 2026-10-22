@@ -25,6 +25,18 @@ class ProductCrudTest extends TestCase
                  ->assertJsonStructure(['data']);
     }
 
+    public function test_public_product_list_hides_unapproved_products()
+    {
+        $approved = Product::factory()->create(['status' => 'approved', 'is_active' => true]);
+        Product::factory()->create(['status' => 'pending', 'is_active' => false]);
+        Product::factory()->create(['status' => 'rejected', 'is_active' => false]);
+
+        $response = $this->getJson('/api/products');
+
+        $response->assertStatus(200)->assertJsonCount(1, 'data');
+        $this->assertSame($approved->id, $response->json('data.0.id'));
+    }
+
     public function test_anyone_can_view_single_product()
     {
         $seller = User::factory()->create(['role' => 'seller']);

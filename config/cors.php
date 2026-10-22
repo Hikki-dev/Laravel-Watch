@@ -19,14 +19,10 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
-        'https://watchapp-phi.vercel.app', // Flutter Web App
-        'http://localhost:3000',
-        'http://localhost:8080',
-        'http://localhost:8000',
-        'http://127.0.0.1:8000',
-        '*', // Allow all for development flexibility (Mobile apps often have no origin or null)
-    ],
+    // Comma-separated list in CORS_ALLOWED_ORIGINS, for example
+    // "https://hikki-dev.github.io,http://localhost:8080". Defaults to any
+    // origin so mobile apps and local development keep working.
+    'allowed_origins' => array_values(array_filter(array_map('trim', explode(',', env('CORS_ALLOWED_ORIGINS', '*'))))),
 
     'allowed_origins_patterns' => [],
 
@@ -36,6 +32,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true,
+    'supports_credentials' => false,
 
 ];

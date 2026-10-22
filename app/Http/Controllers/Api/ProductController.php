@@ -13,7 +13,16 @@ class ProductController extends Controller
 
     public function index()
     {
-        return response()->json(['data' => Product::with('images')->get()]);
+        $query = Product::with('images');
+
+        // The public catalogue only lists approved, active products.
+        // Admins (token with the '*' ability) still see everything.
+        $user = auth('sanctum')->user();
+        if (! $user || ! $user->isAdmin()) {
+            $query->where('status', 'approved')->where('is_active', true);
+        }
+
+        return response()->json(['data' => $query->get()]);
     }
 
     public function show($id)
