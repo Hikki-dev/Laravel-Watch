@@ -72,7 +72,7 @@ class AdminUserManagementTest extends TestCase
     public function test_can_update_password()
     {
         $admin = User::factory()->create(['role' => 'admin', 'is_active' => true]);
-        $user = User::factory()->create(['password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi']); // password
+        $user = User::factory()->create(['password' => 'password']);
 
         $this->actingAs($admin, 'web');
 

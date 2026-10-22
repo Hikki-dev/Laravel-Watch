@@ -1,12 +1,12 @@
-<nav x-data="{ open: false }" class="bg-white shadow-lg relative z-50">
+<nav x-data="{ open: false }" class="bg-gray-100 border-b border-gray-200 relative z-50">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between h-20">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ url('/') }}" class="font-luxury text-2xl font-bold text-gray-800">
-                        CHRONOS
+                    <a href="{{ url('/') }}" class="font-luxury text-2xl text-gray-800" style="letter-spacing: .3em">
+                        {{ config('app.brand') }}
                     </a>
                 </div>
 
@@ -67,10 +67,11 @@
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <x-theme-toggle class="me-4" />
                 <!-- Right Side -->
                 @auth
                     @if (Auth::user()->role === 'customer')
-                        <a href="{{ route('cart.index') }}" class="text-gray-700 hover:text-luxury-gold flex items-center mr-4">
+                        <a href="{{ route('cart.index') }}" class="text-gray-700 hover:text-luxury-gold flex items-center mr-4 text-sm">
                             <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m2.6 8L6 7m1 6v4a1 1 0 001 1h8a1 1 0 001-1v-4m-2 0L12 9l-3 4m0 0a2 2 0 102 2 2 0 00-2-2z"></path>
                             </svg>
@@ -119,14 +120,15 @@
                     </div>
                 @else
                     <div class="space-x-4">
-                        <a href="{{ route('login') }}" class="btn-luxury-outline text-sm px-4 py-2 border-2 border-luxury-gold text-luxury-gold rounded-lg hover:bg-luxury-gold hover:text-white transition">Sign In</a>
-                        <a href="{{ route('register') }}" class="btn-luxury text-sm px-4 py-2 bg-luxury-gold text-white rounded-lg hover:bg-luxury-darkGold transition">Register</a>
+                        <a href="{{ route('login') }}" class="btn-luxury-outline" style="padding: .7rem 1.2rem">Sign in</a>
+                        <a href="{{ route('register') }}" class="btn-luxury" style="padding: .7rem 1.2rem">Register</a>
                     </div>
                 @endauth
             </div>
 
             <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
+            <div class="-me-2 flex items-center gap-2 sm:hidden">
+                <x-theme-toggle />
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="size-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />

@@ -16,6 +16,12 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
 
     /*
+    | Wordmark shown in the navigation and footer.
+    */
+
+    'brand' => env('APP_BRAND', 'LUXWATCH'),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------

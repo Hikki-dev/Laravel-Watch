@@ -1,18 +1,19 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Page Header -->
-        <div class="mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 font-luxury mb-2">Luxury Watches</h1>
-            <p class="text-gray-600">
-                Showing {{ $products->total() }} premium timepieces
+        <div class="mb-10 reveal">
+            <span class="eyebrow block mb-3">The collection</span>
+            <h1 class="font-luxury font-light text-5xl leading-none mb-3">Fine watches</h1>
+            <p class="text-gray-500">
+                {{ $products->total() }} {{ Str::plural('timepiece', $products->total()) }}
             </p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <!-- Filters Sidebar -->
             <div class="lg:col-span-1">
-                <div class="bg-white rounded-lg shadow p-6 sticky top-24 border border-gray-200">
-                    <h3 class="font-semibold text-lg mb-4">Filters</h3>
+                <div class="bg-white p-6 sticky top-24 border border-gray-200" style="border-radius: 2px">
+                    <h3 class="eyebrow mb-5">Filters</h3>
 
                     <!-- Search -->
                     <div class="mb-6">
@@ -35,7 +36,7 @@
                                     value="{{ request('max_price') }}"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-luxury-gold focus:ring-luxury-gold text-sm">
                             </div>
-                            <button type="submit" class="w-full border-2 border-luxury-gold text-luxury-gold font-semibold py-2 rounded-md hover:bg-luxury-gold hover:text-white transition text-sm">Apply</button>
+                            <button type="submit" class="btn-luxury-outline w-full" style="padding: .7rem 1rem">Apply</button>
                         </form>
 
                         <!-- Quick price filters -->
@@ -89,7 +90,7 @@
 
                 @if(auth()->check() && auth()->user()->isAdmin())
                     <div class="flex justify-end mb-4">
-                        <a href="{{ route('products.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <a href="{{ route('products.create') }}" class="btn-luxury">
                             Add New Product
                         </a>
                     </div>
@@ -97,56 +98,35 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @forelse($products as $product)
-                        <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden group hover:shadow-xl transition duration-300">
-                            <a href="{{ route('products.show', $product) }}" class="block">
-                                <div class="aspect-square bg-gray-100 relative overflow-hidden">
+                        <div class="card-luxury overflow-hidden group">
+                            <a href="{{ route('products.show', $product) }}" class="block p-5">
+                                <div class="aspect-square stage relative overflow-hidden mb-5">
                                     @if($product->image_url)
-                                        <img src="{{ asset($product->image_url) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                        <img src="{{ asset($product->image_url) }}" alt="{{ $product->name }}" loading="lazy"
+                                            class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
                                     @else
-                                        <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-200">
-                                            No Image
-                                        </div>
+                                        <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>
                                     @endif
-                                    
-                                    <!-- Badges -->
-                                    <div class="absolute top-3 left-3 space-y-2">
-                                        <span class="inline-block bg-luxury-gold text-white text-xs px-2 py-1 rounded">
-                                            {{ ucfirst($product->condition_type ?? 'New') }}
-                                        </span>
-                                    </div>
+
+                                    <span class="pill absolute top-3 left-3 bg-white text-gray-800 border border-gray-200">
+                                        {{ ucfirst($product->condition_type ?? 'New') }}
+                                    </span>
                                 </div>
 
-                                <div class="p-4">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <div class="flex text-yellow-400">
-                                            @for ($i = 0; $i < 5; $i++)
-                                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                </svg>
-                                            @endfor
-                                            <span class="text-sm ml-1 text-gray-600">(4.8)</span>
-                                        </div>
-                                    </div>
-
-                                    <h3 class="font-semibold text-lg mb-1 truncate">{{ $product->name }}</h3>
-                                    <p class="text-gray-600 text-sm mb-3">{{ $product->brand }}</p>
-
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-2xl font-bold text-luxury-gold">${{ number_format($product->price) }}</span>
-                                        <span class="bg-luxury-gold text-white text-sm px-4 py-2 rounded hover:bg-luxury-darkGold transition">
-                                            View Details
-                                        </span>
-                                    </div>
+                                <div class="space-y-1.5">
+                                    <span class="eyebrow block">{{ $product->brand }}</span>
+                                    <h3 class="font-luxury text-2xl leading-tight">{{ $product->name }}</h3>
+                                    <span class="font-mono text-sm block pt-1.5">${{ number_format($product->price) }}</span>
                                 </div>
                             </a>
-                            
+
                             @if(auth()->check() && auth()->user()->isAdmin())
-                                <div class="px-4 pb-4 flex justify-between border-t pt-4">
-                                    <a href="{{ route('products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">Edit</a>
+                                <div class="px-5 pb-5 flex justify-between border-t border-gray-200 pt-4">
+                                    <a href="{{ route('products.edit', $product) }}" class="text-luxury-gold text-sm font-medium">Edit</a>
                                     <form action="{{ route('products.destroy', $product) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 text-sm font-medium">Delete</button>
+                                        <button type="submit" class="text-red-600 hover:text-red-700 text-sm font-medium">Delete</button>
                                     </form>
                                 </div>
                             @endif

@@ -1,4 +1,5 @@
 <x-app-layout>
+    @php($spinFrames = is_array($product->spin_frames) ? $product->spin_frames : [])
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Breadcrumb -->
@@ -20,13 +21,33 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <!-- Product Images Section - Left Side -->
-                <div class="space-y-4" x-data="{ mainImage: '{{ $product->images->first()->image_path ?? $product->image_url ?? '' }}' }">
+                <div class="space-y-4" data-s360-scope="1" x-data="{ mainImage: '{{ $product->images->first()->image_path ?? $product->image_url ?? '' }}', view: 'photo' }">
+                    @if (count($spinFrames) >= 8)
+                        <div class="flex gap-2">
+                            <button type="button" @click="view = 'photo'" :class="view === 'photo' ? 'border-luxury-gold text-luxury-gold' : 'border-gray-200 text-gray-700'"
+                                class="h-10 px-5 border rounded-full text-sm font-medium transition">Photos</button>
+                            <button type="button" @click="view = 'spin'" :class="view === 'spin' ? 'border-luxury-gold text-luxury-gold' : 'border-gray-200 text-gray-700'"
+                                class="h-10 px-5 border rounded-full text-sm font-medium transition">360°</button>
+                        </div>
+
+                        <div x-show="view === 'spin'" x-cloak class="relative aspect-square stage border border-gray-200">
+                            <x-spin360 :frames="$spinFrames" :auto="'spin'" :label="'Rotate the '.$product->name" class="absolute inset-0" />
+                            <span class="eyebrow absolute left-5 bottom-4">Drag to rotate</span>
+                        </div>
+                        <div x-show="view === 'spin'" x-cloak class="flex flex-wrap gap-2">
+                            @foreach (['front' => 'Front', 'angle' => 'Angle', 'side' => 'Side', 'back' => 'Case back'] as $key => $label)
+                                <button type="button" data-s360-view="{{ $key }}"
+                                    class="h-10 px-4 border border-gray-200 rounded-full text-sm bg-white hover:border-luxury-gold hover:text-luxury-gold transition aria-pressed:border-luxury-gold">{{ $label }}</button>
+                            @endforeach
+                        </div>
+                    @endif
+
                     <!-- Main Large Image -->
-                    <div class="aspect-square bg-white rounded-lg overflow-hidden border border-gray-200 relative">
+                    <div x-show="view === 'photo'" class="aspect-square stage overflow-hidden border border-gray-200 relative">
                         <template x-if="mainImage">
                             <img :src="mainImage.startsWith('http') || mainImage.startsWith('/') ? mainImage : '/'+mainImage" 
                                  alt="{{ $product->name }}" 
-                                 class="w-full h-full object-contain p-8">
+                                 class="w-full h-full object-contain p-6">
                         </template>
                         <template x-if="!mainImage">
                             <div class="w-full h-full flex items-center justify-center bg-gray-50">
@@ -97,7 +118,8 @@
                     </div>
 
                     <!-- Product Name and Brand -->
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ $product->name }}</h1>
+                    <x-brand-logo :name="$product->brand" height="h-12" class="mb-5" style="width: 9rem" />
+                    <h1 class="font-luxury font-light leading-none mb-3" style="font-size: clamp(2.75rem, 4.5vw, 4rem)">{{ $product->name }}</h1>
                     <div class="flex items-center space-x-2 mb-4">
                         <p class="text-xl text-gray-600">{{ $product->brand }}</p>
                         @if ($product->model)
@@ -110,22 +132,10 @@
                         @endif
                     </div>
 
-                    <!-- Rating -->
-                    <div class="flex items-center mb-6">
-                        <div class="flex text-yellow-400">
-                            @for ($i = 0; $i < 5; $i++)
-                                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                            @endfor
-                        </div>
-                        <span class="ml-2 text-gray-600">(4.8 out of 5 stars)</span>
-                    </div>
-
                     <!-- Price Section -->
-                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div class="border-y border-gray-200 py-5 mb-6">
                         <div class="flex items-baseline">
-                            <span class="text-4xl font-bold text-luxury-gold">${{ number_format($product->price, 2) }}</span>
+                            <span class="font-mono text-3xl text-gray-900">${{ number_format($product->price, 2) }}</span>
                             @if ($product->original_price && $product->original_price > $product->price)
                                 <span class="ml-3 text-xl text-gray-400 line-through">${{ number_format($product->original_price, 2) }}</span>
                                 <span class="ml-2 bg-green-100 text-green-800 text-sm px-2 py-1 rounded">
@@ -167,13 +177,13 @@
                             </div>
 
                             <div class="flex space-x-4">
-                                <button type="submit" class="flex-1 bg-luxury-gold text-white font-bold py-3 px-6 rounded hover:bg-luxury-darkGold transition flex items-center justify-center">
+                                <button type="submit" class="btn-luxury flex-1">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                     </svg>
                                     Add to Cart
                                 </button>
-                                <button type="submit" name="buy_now" value="1" class="flex-1 bg-gray-900 text-white font-bold py-3 px-6 rounded hover:bg-gray-800 transition flex items-center justify-center">
+                                <button type="submit" name="buy_now" value="1" class="btn-luxury-outline flex-1">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                     </svg>
@@ -184,7 +194,7 @@
                     @elseif (!Auth::check())
                         <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-lg mb-6">
                             <p class="text-gray-700 mb-3">Please login to purchase this luxury timepiece</p>
-                            <a href="{{ route('login') }}" class="inline-block bg-luxury-gold text-white font-bold py-2 px-4 rounded hover:bg-luxury-darkGold">Login to Purchase</a>
+                            <a href="{{ route('login') }}" class="btn-luxury">Login to purchase</a>
                         </div>
                     @endif
 

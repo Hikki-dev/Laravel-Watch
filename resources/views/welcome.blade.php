@@ -1,135 +1,126 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Laravel') }}</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
-</head>
-<body class="antialiased font-sans text-gray-900 bg-gray-100">
-    <div class="min-h-screen flex flex-col">
-        <!-- Navigation -->
-        <!-- Navigation -->
-        @include('navigation-menu')
+<x-app-layout>
+    @php
+        $hero = $featured_products->first();
+        $heroImage = $hero && $hero->image_url ? asset($hero->image_url) : asset('images/hero/hero-bg.jpg');
+        $brandStrip = ['Patek Philippe', 'Audemars Piguet', 'Rolex', 'Omega', 'Richard Mille', 'TAG Heuer', 'Swatch', 'Seiko', 'Casio', 'Citizen'];
+    @endphp
 
-
-        <!-- Hero Section -->
-        <section class="relative h-screen bg-gray-900 overflow-hidden">
-            <div class="absolute inset-0">
-                <img src="{{ asset('images/hero/hero-bg.jpg') }}" alt="Luxury watches" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black opacity-40"></div>
-            </div>
-
-            <div class="relative z-10 flex items-center justify-center h-full">
-                <div class="text-center text-white max-w-4xl px-4">
-                    <h1 class="text-5xl md:text-7xl font-bold mb-6">
-                        Timeless Elegance
-                    </h1>
-                    <p class="text-xl md:text-2xl mb-8 opacity-90">
-                        Discover exquisite luxury timepieces crafted with precision
-                    </p>
-                    <a href="{{ route('products.index') }}" class="bg-yellow-600 hover:bg-yellow-700 text-white text-lg px-8 py-4 inline-block rounded transition">
-                        Explore Collection
-                    </a>
+    <!-- Hero -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <span class="eyebrow reveal reveal-1 block">The world's finest watches</span>
+                <h1 class="reveal reveal-2 font-luxury font-light leading-none" style="font-size: clamp(3.25rem, 7vw, 6.25rem)">
+                    Watches worth waiting for.
+                </h1>
+                <p class="reveal reveal-3 text-lg text-gray-500 max-w-md leading-relaxed">
+                    Every listing is reviewed by our team before it goes live, so what you see is what you can buy.
+                </p>
+                <div class="reveal reveal-4 flex flex-wrap gap-4">
+                    <a href="{{ route('products.index') }}" class="btn-luxury">Explore watches</a>
+                    <a href="{{ route('register') }}" class="btn-luxury-outline">Become a seller</a>
                 </div>
             </div>
-        </section>
 
-        <!-- Featured Brands Section -->
-        <section class="py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Premium Watch Brands</h2>
-                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
-                        Discover timepieces from the world's most prestigious manufacturers.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    @foreach($categories as $category)
-                        <div class="border rounded-lg p-6 text-center group hover:shadow-lg transition">
-                            <div class="w-full h-48 bg-gray-100 rounded-lg mb-4 flex items-center justify-center p-6">
-                                @if($category->image)
-                                    @if(Str::startsWith($category->image, ['http', 'https']))
-                                        <img src="{{ $category->image }}" alt="{{ $category->name }}" class="max-w-full max-h-full object-contain">
-                                    @else
-                                        <img src="{{ asset('images/brands/' . $category->image) }}" alt="{{ $category->name }}" class="max-w-full max-h-full object-contain">
-                                    @endif
-                                @else
-                                    <span class="text-gray-400">{{ $category->name }}</span>
-                                @endif
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">{{ $category->name }}</h3>
-                            <p class="text-gray-600 mb-4">{{ Str::limit($category->description, 100) }}</p>
-                            <a href="{{ route('products.index', ['brand' => $category->name]) }}" class="inline-flex items-center text-yellow-600 hover:text-yellow-700 font-medium">
-                                View Collection
-                                <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                </svg>
-                            </a>
+            <a href="{{ $hero ? route('products.show', $hero) : route('products.index') }}"
+                class="reveal reveal-3 group relative block stage border border-gray-200 overflow-hidden aspect-[4/5] lg:aspect-square">
+                <img src="{{ $heroImage }}" alt="{{ $hero->name ?? 'Featured watch' }}"
+                    class="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105">
+                @if ($hero)
+                    <div class="absolute left-0 right-0 bottom-0 bg-white/95 border-t border-gray-200 px-6 py-5 flex items-end justify-between gap-4">
+                        <div>
+                            <span class="eyebrow block mb-1">{{ $hero->brand }}</span>
+                            <span class="font-luxury text-2xl leading-none">{{ $hero->name }}</span>
                         </div>
+                        <span class="font-mono text-sm">${{ number_format($hero->price) }}</span>
+                    </div>
+                @endif
+            </a>
+        </div>
+    </section>
+
+    <!-- Brand strip -->
+    <section class="border-y border-gray-200 overflow-hidden" aria-label="Brands">
+        <div class="marquee py-7 gap-5">
+            @foreach ([1, 2] as $repeat)
+                <div class="flex gap-5 pr-5" @if ($repeat === 2) aria-hidden="true" @endif>
+                    @foreach ($brandStrip as $brand)
+                        <x-brand-logo :name="$brand" height="h-14" style="min-width: 9rem" />
                     @endforeach
                 </div>
+            @endforeach
+        </div>
+    </section>
+
+    <!-- Featured watches -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div class="flex flex-wrap items-end justify-between gap-4 mb-12">
+            <div>
+                <span class="eyebrow block mb-3">Just listed</span>
+                <h2 class="font-luxury font-light text-5xl leading-none">New arrivals</h2>
             </div>
-        </section>
+            <a href="{{ route('products.index') }}" class="text-sm uppercase tracking-widest text-luxury-gold border-b border-luxury-gold pb-1">View all watches</a>
+        </div>
 
-        <!-- Featured Products Section -->
-        <section class="py-16 bg-gray-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Featured Watches</h2>
-                    <p class="text-gray-600 text-lg">Curated selection of exceptional timepieces</p>
-                </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach ($featured_products as $product)
+                <a href="{{ route('products.show', $product) }}" class="card-luxury p-5 flex flex-col gap-5">
+                    <div class="aspect-square stage overflow-hidden">
+                        @if ($product->image_url)
+                            <img src="{{ asset($product->image_url) }}" alt="{{ $product->name }}" loading="lazy"
+                                class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>
+                        @endif
+                    </div>
+                    <div class="space-y-1.5">
+                        <span class="eyebrow block">{{ $product->brand }}</span>
+                        <h3 class="font-luxury text-2xl leading-tight">{{ $product->name }}</h3>
+                        <span class="font-mono text-sm block pt-1.5">${{ number_format($product->price) }}</span>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    </section>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    @foreach($featured_products as $product)
-                        <div class="bg-white rounded-lg shadow overflow-hidden group">
-                            <div class="aspect-square bg-gray-100 overflow-hidden relative">
-                                @if($product->image_url)
-                                    <img src="{{ asset($product->image_url) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-200">
-                                        No Image
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="p-4">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="inline-block bg-yellow-600 text-white text-xs px-2 py-1 rounded">
-                                        {{ ucfirst($product->condition_type ?? 'New') }}
-                                    </span>
-                                    <div class="flex text-yellow-400 text-sm">
-                                        <span class="mr-1">4.8</span>
-                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <h3 class="font-semibold text-lg mb-1 truncate">{{ $product->name }}</h3>
-                                <p class="text-gray-600 text-sm mb-3">{{ $product->brand }}</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xl font-bold text-yellow-600">${{ number_format($product->price) }}</span>
-                                    <a href="{{ route('products.show', $product) }}" class="text-sm text-gray-600 hover:text-gray-900 border border-gray-300 px-3 py-1 rounded hover:bg-gray-50">
-                                        View
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+    <!-- Brands -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <div class="mb-10">
+            <span class="eyebrow block mb-3">Maisons</span>
+            <h2 class="font-luxury font-light text-5xl leading-none">Shop by brand</h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @foreach ($categories as $category)
+                <a href="{{ route('products.index', ['brand' => $category->name]) }}"
+                    class="card-luxury flex items-center justify-between gap-6 p-5">
+                    <x-brand-logo :name="$category->name" height="h-16" style="width: 8.5rem" />
+                    <span class="flex-1 font-luxury text-2xl">{{ $category->name }}</span>
+                    <span class="font-mono text-gray-500" aria-hidden="true">→</span>
+                </a>
+            @endforeach
+        </div>
+    </section>
 
-                <div class="text-center mt-8">
-                    <a href="{{ route('products.index') }}" class="text-yellow-600 hover:text-yellow-700 font-medium text-lg">View All Watches &rarr;</a>
-                </div>
+    <!-- Sellers -->
+    <section class="bg-white border-y border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="space-y-6">
+                <span class="eyebrow block">For sellers</span>
+                <h2 class="font-luxury font-light leading-none" style="font-size: clamp(2.75rem, 5vw, 4.25rem)">Sell a watch the way it deserves.</h2>
+                <p class="text-gray-500 text-lg max-w-lg leading-relaxed">
+                    List your piece, our team reviews it, and once it sells your payout is sent through Stripe.
+                </p>
+                <a href="{{ route('register') }}" class="btn-luxury">Open a seller account</a>
             </div>
-        </section>
-
-        <!-- Footer -->
-        <x-footer />
-    </div>
-    @livewireScripts
-</body>
-</html>
+            <div class="grid grid-cols-3 border border-gray-200">
+                @foreach ([['01', 'List', 'Add photos, details and your price.'], ['02', 'Review', 'We approve it before it goes live.'], ['03', 'Get paid', 'Payout arrives through Stripe.']] as $i => $step)
+                    <div class="p-6 space-y-3 {{ $i > 0 ? 'border-l border-gray-200' : '' }}">
+                        <span class="font-mono text-xs text-luxury-gold">{{ $step[0] }}</span>
+                        <div class="font-luxury text-2xl leading-tight">{{ $step[1] }}</div>
+                        <p class="text-sm text-gray-500 leading-relaxed">{{ $step[2] }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+</x-app-layout>

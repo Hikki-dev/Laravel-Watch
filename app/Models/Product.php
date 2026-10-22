@@ -14,7 +14,7 @@ class Product extends Model
         'reference_number', 'price', 'original_price', 'stock_quantity',
         'condition_type', 'movement_type', 'case_material', 'dial_color',
         'strap_material', 'water_resistance', 'year_manufactured', 'warranty_info',
-        'is_featured', 'is_active', 'status', 'image_url'
+        'is_featured', 'is_active', 'status', 'image_url', 'spin_frames'
     ];
 
     protected $casts = [
@@ -22,6 +22,7 @@ class Product extends Model
         'original_price' => 'decimal:2',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
+        'spin_frames' => 'array',
     ];
 
     public function category()
