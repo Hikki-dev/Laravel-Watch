@@ -29,6 +29,10 @@ A luxury **watch marketplace** built with **Laravel 12**, **MySQL** and **Stripe
 - Token auth with **Laravel Sanctum**. Google sign-in verifies the Firebase ID token server-side. Abilities depend on role: `*` for admin, product create/update/delete for seller, `order:create` for customer.
 - Products, brands, cart, orders, favourites, reviews, profile, checkout, seller product CRUD, admin approvals and user CRUD. See [docs/API.md](docs/API.md).
 
+## Design
+
+Light by default with a dark toggle, self-hosted fonts, real brand logos and a drag-to-rotate 360 viewer for products that have frames. See [docs/DESIGN.md](docs/DESIGN.md).
+
 ## Tech stack
 
 | Area | Choice |
