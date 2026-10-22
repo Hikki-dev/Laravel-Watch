@@ -8,7 +8,7 @@ Base URL: `https://<your-host>/api`. JSON in and out. Authenticated routes need 
 |---|---|---|---|
 | `POST` | `/register` | `name`, `email`, `password`, ... | Returns a token |
 | `POST` | `/login` | `email`, `password` | Returns a token |
-| `POST` | `/auth/google` | `email`, `name?`, `google_id?` | Returns a token. **Currently unverified, see the README security notes** |
+| `POST` | `/auth/google` | `id_token`, `name?` | Firebase/Google ID token, verified server-side (needs `FIREBASE_WEB_API_KEY`). The email comes from the verified token and must be verified by Google. Creates a `customer` on first sign-in. An existing account keeps its role and password. Throttled to 10 per minute. 401 for an invalid token, 503 if not configured |
 | `POST` | `/logout` | none | Revokes the current token |
 | `GET` | `/user` | none | Current user |
 

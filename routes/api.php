@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 // Public Auth Routes
 Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
 Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
-Route::post('/auth/google', [\App\Http\Controllers\Api\AuthController::class, 'loginWithGoogle']);
+Route::post('/auth/google', [\App\Http\Controllers\Api\AuthController::class, 'loginWithGoogle'])->middleware('throttle:10,1');
 
 // Public Product Routes
 Route::get('/products', [\App\Http\Controllers\Api\ProductController::class, 'index']);

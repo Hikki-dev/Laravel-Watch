@@ -100,41 +100,6 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
     Route::get('/stripe/callback', [\App\Http\Controllers\StripeConnectController::class, 'callback'])->name('stripe.callback');
 });
 
-Route::get('/debug-config', function () {
-    return [
-        'db_connection' => config('database.default'),
-        'mysql_host' => config('database.connections.mysql.host'),
-        'mysql_port' => config('database.connections.mysql.port'),
-        'mysql_database' => config('database.connections.mysql.database'),
-        'mysql_username' => config('database.connections.mysql.username'),
-        'mysql_url_is_set' => !empty(config('database.connections.mysql.url')),
-        'env_db_host' => env('DB_HOST'),
-        'env_mysql_host' => env('MYSQLHOST'),
-        'env_db_url_is_set' => !empty(env('DB_URL')),
-        'app_name' => config('app.name'),
-        'env_app_name' => env('APP_NAME'),
-        'app_key_is_set' => !empty(env('APP_KEY')),
-    ];
-});
-
-Route::get('/debug-vite', function () {
-    $manifestPath = public_path('build/manifest.json');
-    $manifestExists = file_exists($manifestPath);
-    $manifestContent = $manifestExists ? json_decode(file_get_contents($manifestPath), true) : null;
-    
-    return [
-        'app_env' => config('app.env'),
-        'app_debug' => config('app.debug'),
-        'asset_url' => config('app.asset_url'),
-        'public_path' => public_path(),
-        'build_path' => public_path('build'),
-        'manifest_exists' => $manifestExists,
-        'manifest_content' => $manifestContent,
-        'hot_file_exists' => file_exists(public_path('hot')),
-        'vite_tags' => Illuminate\Support\Facades\Vite::tags(['resources/css/app.css', 'resources/js/app.js'])->toHtml(),
-    ];
-});
-
 // Image Serving Routes
 Route::get('/images/products/{id}', [\App\Http\Controllers\ImageController::class, 'showProductImage'])->name('images.products');
 Route::get('/images/users/{id}', [\App\Http\Controllers\ImageController::class, 'showUserImage'])->name('images.users');

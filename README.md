@@ -26,7 +26,7 @@ A luxury **watch marketplace** built with **Laravel 12**, **MySQL** and **Stripe
 - **Approve or reject** products and categories.
 
 **API for the mobile app**
-- Token auth with **Laravel Sanctum**. Abilities depend on role: `*` for admin, product create/update/delete for seller, `order:create` for customer.
+- Token auth with **Laravel Sanctum**. Google sign-in verifies the Firebase ID token server-side. Abilities depend on role: `*` for admin, product create/update/delete for seller, `order:create` for customer.
 - Products, brands, cart, orders, favourites, reviews, profile, checkout, seller product CRUD, admin approvals and user CRUD. See [docs/API.md](docs/API.md).
 
 ## Tech stack
@@ -75,11 +75,10 @@ The seeder (`database/seeders/LegacyDataSeeder.php`) creates a sample admin, sel
 | `APP_KEY`, `APP_URL`, `APP_ENV`, `APP_DEBUG` | Core. Set `APP_DEBUG=false` in production |
 | `DB_CONNECTION` and `DB_*` (or `DB_URL`, `MYSQL*` on Railway) | Database |
 | `STRIPE_SECRET` | Stripe Checkout and Connect (read with `env()`) |
+| `FIREBASE_WEB_API_KEY` | Web API key of the Firebase project. Used to verify the ID token on `POST /api/auth/google` |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URL` | Google sign-in on the web |
 | `FIREBASE_CREDENTIALS` | Firebase config (`config/firebase.php`) |
 | `MAIL_*` | Email verification and password reset |
-
-`.env.example` does not list `STRIPE_SECRET` yet. Add it yourself.
 
 ## Project structure
 
@@ -117,14 +116,12 @@ Feature tests cover registration and login, roles and redirects, API auth and to
 
 ## Known issues and security notes
 
-Read these before exposing the app publicly. They are listed so they can be fixed, not hidden:
+Read these before exposing the app publicly:
 
-1. **`POST /api/auth/google` does not verify the identity.** It trusts the `email` and `google_id` in the request, creates or updates that user, and returns a token. Anyone who knows a user's email can obtain a token for it. It also resets that user's password and sets `role` to `customer`. It must verify a Google or Firebase ID token server-side first.
-2. **Debug routes are public.** `/debug-config` returns database host and username, and `/debug-vite` returns app settings. Remove them.
-3. **Seeded sample accounts** use a known password. Never seed production.
-4. **`GET /api/products` returns every product**, including pending and rejected ones. Filter by `status` and `is_active` for public listings.
-5. **Images are stored in the database** (`image_data` columns) and an `/api/image-proxy` route serves files from `public/`. Fine for a prototype, but consider object storage at scale.
-6. `submission.zip` is committed to the repo root. It can be removed.
+1. **Seeded sample accounts** use a known password. Never seed production.
+2. **`GET /api/products` returns every product**, including pending and rejected ones. Filter by `status` and `is_active` for public listings.
+3. **Images are stored in the database** (`image_data` columns) and an `/api/image-proxy` route serves files from `public/`. Fine for a prototype, but consider object storage at scale.
+4. `submission.zip` is committed to the repo root. It can be removed.
 
 ## License
 

@@ -35,6 +35,11 @@ return [
         ],
     ],
 
+    'firebase' => [
+        // Web API key of the Firebase project; used to verify Google/Firebase ID tokens.
+        'web_api_key' => env('FIREBASE_WEB_API_KEY'),
+    ],
+
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),

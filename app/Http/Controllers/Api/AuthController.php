@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -86,29 +88,63 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Sign in with a Firebase/Google ID token.
+     *
+     * The identity comes from the verified token, never from the request body:
+     * the token is checked by Google (signature, expiry, project) and the email
+     * and Google id are read from Google's response.
+     */
     public function loginWithGoogle(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'name' => 'nullable|string',
-            'google_id' => 'nullable|string',
+            'id_token' => 'required|string',
+            'name' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'errors' => $validator->errors()], 422);
         }
 
-        // Ideally, verify the token here. For now, we trust the request as it's an assignment.
-        // If an access_token is sent, we could use Socialite::driver('google')->userFromToken($token)
-        
-        $user = User::updateOrCreate([
-            'email' => $request->email,
-        ], [
-            'name' => $request->name ?? explode('@', $request->email)[0],
-            'google_id' => $request->google_id,
-            'password' => Hash::make(\Illuminate\Support\Str::random(16)),
-            'role' => 'customer',
-        ]);
+        $apiKey = config('services.firebase.web_api_key');
+        if (!$apiKey) {
+            return response()->json(['status' => 'error', 'message' => 'Google login is not configured.'], 503);
+        }
+
+        $lookup = Http::timeout(10)->post(
+            'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=' . $apiKey,
+            ['idToken' => $request->id_token]
+        );
+
+        $identity = $lookup->successful() ? $lookup->json('users.0') : null;
+        $email = $identity['email'] ?? null;
+
+        if (!$email || empty($identity['emailVerified'])) {
+            return response()->json(['status' => 'error', 'message' => 'Invalid or unverified Google token.'], 401);
+        }
+
+        $googleId = collect($identity['providerUserInfo'] ?? [])
+            ->firstWhere('providerId', 'google.com')['rawId'] ?? null;
+
+        $user = User::where('email', $email)->first();
+
+        if ($user) {
+            if ($user->is_active === false) {
+                return response()->json(['status' => 'error', 'message' => 'Account is disabled.'], 403);
+            }
+            // Link the Google id once. Never touch the role or password of an existing account.
+            if ($googleId && !$user->google_id) {
+                $user->update(['google_id' => $googleId]);
+            }
+        } else {
+            $user = User::create([
+                'email' => $email,
+                'name' => $request->name ?: ($identity['displayName'] ?? explode('@', $email)[0]),
+                'google_id' => $googleId,
+                'password' => Hash::make(Str::random(32)),
+                'role' => 'customer',
+            ]);
+        }
 
         $abilities = $this->getAbilities($user);
         $token = $user->createToken('auth_token', $abilities)->plainTextToken;
