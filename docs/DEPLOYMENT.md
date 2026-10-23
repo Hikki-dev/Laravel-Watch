@@ -43,13 +43,6 @@ In the Watch-final repo set the `API_BASE_URL` repository variable to `https://<
 
 Add the Pages domain (for example `hikki-dev.github.io`) under **Authentication > Settings > Authorized domains**.
 
-## Vercel and Neon Postgres
+## Vercel and Neon
 
-An alternative to Render. `vercel.json` builds `api/index.php` with the community `vercel-php` runtime and serves `public/` statically; `bootstrap/app.php` moves Laravel's writable storage to `/tmp` on Vercel.
-
-1. Create a Neon project (pick the region next to your Vercel functions, for example `us-east-1` with `iad1`) and use its **pooled** host.
-2. Run the migrations and seed from your machine with the Neon values in the environment: `DB_CONNECTION=pgsql DB_HOST=... DB_PORT=5432 DB_DATABASE=... DB_USERNAME=... DB_PASSWORD=... DB_SSLMODE=require php artisan migrate --force --seed`. Set `SEED_PASSWORD` to a strong value first, because the seeded admin, seller and customer accounts otherwise use `password`.
-3. Build assets with `npm run build` (the `public/build` folder is uploaded because `.vercelignore` replaces `.gitignore`), then link the project and add `APP_KEY`, `APP_URL`, `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` and `DB_SSLMODE` with `vercel env add`.
-4. Deploy with `vercel deploy --prod`. Sessions use cookies and the cache uses `/tmp` (see `vercel.json`), so pages need few database round trips.
-
-Notes: uploads are stored in the database (`bytea` on Postgres), which suits serverless. Stripe and Google sign-in need their keys added as environment variables. New Vercel projects have Deployment Protection on; turn it off under Settings to make the site public.
+A serverless alternative with a Postgres database is covered in [Vercel and Neon](Vercel%20and%20Neon.md).
