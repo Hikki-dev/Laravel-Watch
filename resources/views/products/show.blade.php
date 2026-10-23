@@ -21,13 +21,13 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <!-- Product Images Section - Left Side -->
-                <div class="space-y-4" data-s360-scope="1" x-data="{ mainImage: '{{ $product->images->first()->image_path ?? $product->image_url ?? '' }}', view: 'photo' }">
+                <div class="space-y-4" data-s360-scope="1" x-data="{ mainImage: '{{ $product->images->first()->image_path ?? $product->image_url ?? '' }}', view: '{{ count($spinFrames) >= 8 ? 'spin' : 'photo' }}' }">
                     @if (count($spinFrames) >= 8)
                         <div class="flex gap-2">
-                            <button type="button" @click="view = 'photo'" :class="view === 'photo' ? 'border-luxury-gold text-luxury-gold' : 'border-gray-200 text-gray-700'"
-                                class="h-10 px-5 border rounded-full text-sm font-medium transition">Photos</button>
                             <button type="button" @click="view = 'spin'" :class="view === 'spin' ? 'border-luxury-gold text-luxury-gold' : 'border-gray-200 text-gray-700'"
                                 class="h-10 px-5 border rounded-full text-sm font-medium transition">360°</button>
+                            <button type="button" @click="view = 'photo'" :class="view === 'photo' ? 'border-luxury-gold text-luxury-gold' : 'border-gray-200 text-gray-700'"
+                                class="h-10 px-5 border rounded-full text-sm font-medium transition">Photos</button>
                         </div>
 
                         <div x-show="view === 'spin'" x-cloak class="relative aspect-square stage border border-gray-200">
@@ -58,7 +58,7 @@
 
                     <!-- Thumbnail Images -->
                     @if($product->images->count() > 0)
-                        <div class="grid grid-cols-4 gap-4">
+                        <div x-show="view === 'photo'" x-cloak class="grid grid-cols-4 gap-4">
                             @foreach($product->images as $image)
                                 <button @click="mainImage = '{{ $image->image_path }}'"
                                     class="aspect-square bg-white rounded-lg overflow-hidden border-2 border-gray-200 hover:border-luxury-gold transition-colors focus:outline-none focus:border-luxury-gold">

@@ -22,20 +22,18 @@
                 </div>
             </div>
 
-            <a href="{{ $hero ? route('products.show', $hero) : route('products.index') }}"
-                class="reveal reveal-3 group relative block stage border border-gray-200 overflow-hidden aspect-[4/5] lg:aspect-square">
-                <img src="{{ $heroImage }}" alt="{{ $hero->name ?? 'Featured watch' }}"
-                    class="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105">
+            <div class="reveal reveal-3 relative stage border border-gray-200 overflow-hidden aspect-[4/5] lg:aspect-square">
+                <x-watch-photo :src="$heroImage" :alt="$hero->name ?? 'Featured watch'" class="absolute inset-0" />
                 @if ($hero)
-                    <div class="absolute left-0 right-0 bottom-0 bg-white/95 border-t border-gray-200 px-6 py-5 flex items-end justify-between gap-4">
+                    <a href="{{ route('products.show', $hero) }}" class="absolute left-0 right-0 bottom-0 bg-white/95 border-t border-gray-200 px-6 py-5 flex items-end justify-between gap-4">
                         <div>
                             <span class="eyebrow block mb-1">{{ $hero->brand }}</span>
                             <span class="font-luxury text-2xl leading-none">{{ $hero->name }}</span>
                         </div>
-                        <span class="font-mono text-sm">${{ number_format($hero->price) }}</span>
-                    </div>
+                        <span class="font-mono text-sm">${{ number_format($hero->price) }} &rarr;</span>
+                    </a>
                 @endif
-            </a>
+            </div>
         </div>
     </section>
 
@@ -67,8 +65,7 @@
                 <a href="{{ route('products.show', $product) }}" class="card-luxury p-5 flex flex-col gap-5">
                     <div class="aspect-square stage overflow-hidden">
                         @if ($product->image_url)
-                            <img src="{{ asset($product->image_url) }}" alt="{{ $product->name }}" loading="lazy"
-                                class="w-full h-full object-cover">
+                            <x-watch-photo :src="asset($product->image_url)" :alt="$product->name" />
                         @else
                             <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>
                         @endif

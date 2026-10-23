@@ -102,8 +102,7 @@
                             <a href="{{ route('products.show', $product) }}" class="block p-5">
                                 <div class="aspect-square stage relative overflow-hidden mb-5">
                                     @if($product->image_url)
-                                        <img src="{{ asset($product->image_url) }}" alt="{{ $product->name }}" loading="lazy"
-                                            class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                                        <x-watch-photo :src="asset($product->image_url)" :alt="$product->name" />
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>
                                     @endif

@@ -102,15 +102,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
                                                 <div class="h-10 w-10 flex-shrink-0">
-                                                     @if($category->image)
-                                                        @if(Str::startsWith($category->image, ['http', 'https']))
-                                                            <img src="{{ $category->image }}" alt="{{ $category->name }}" class="h-10 w-10 object-contain">
-                                                        @else
-                                                            <img src="{{ asset('images/brands/' . $category->image) }}" alt="{{ $category->name }}" class="h-10 w-10 object-contain">
-                                                        @endif
-                                                    @else
-                                                        <div class="h-10 w-10 bg-gray-100 flex items-center justify-center text-xs text-gray-500">No img</div>
-                                                    @endif
+                                                    <x-brand-logo :name="$category->name" :image="$category->image" height="h-10" class="w-10 !p-1" />
                                                 </div>
                                                 <div class="ml-4">
                                                     <div class="text-sm font-medium text-gray-900">{{ $category->name }}</div>

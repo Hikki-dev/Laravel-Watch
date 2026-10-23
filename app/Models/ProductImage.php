@@ -26,6 +26,24 @@ class ProductImage extends Model
         'image_data',
     ];
 
+    // PostgreSQL bytea needs a stream to accept raw bytes; other drivers take the string.
+    public function setImageDataAttribute($value): void
+    {
+        $this->attributes['image_data'] = static::binary($value);
+    }
+
+    public static function binary($value)
+    {
+        if (! is_string($value) || \DB::getDriverName() !== 'pgsql') {
+            return $value;
+        }
+        $h = fopen('php://temp', 'r+');
+        fwrite($h, $value);
+        rewind($h);
+
+        return $h;
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class);

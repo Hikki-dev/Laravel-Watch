@@ -20,7 +20,15 @@
     n = frames ? frames.length : parseInt(d.count || '48', 10);
     var f = ((parseInt(d.frame || '0', 10) % n) + n) % n, base = f, auto = reduce ? null : (d.auto || null);
     var layer = el.querySelector('.s360-layer'); if (!layer) return;
-    if (frames) { layer.style.backgroundSize = 'contain'; frames.forEach(function (u) { var im = new Image(); im.src = u; }); }
+    if (frames) {
+      layer.style.backgroundSize = 'contain';
+      // Warm the browser cache only once the viewer is on screen, first frame first, the rest when idle.
+      var warm = new IntersectionObserver(function (e, o) {
+        if (!e[0].isIntersecting) return; o.disconnect();
+        var i = 0, next = function () { if (i >= frames.length) return; var im = new Image(); im.decoding = 'async'; im.src = frames[i++]; (window.requestIdleCallback || setTimeout)(next, 30); };
+        next(); next(); next();
+      }); warm.observe(el);
+    }
 
     function show(i) {
       i = ((Math.round(i) % n) + n) % n;

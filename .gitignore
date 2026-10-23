@@ -22,3 +22,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+.vercel
+
+# Third-party brand photos and 360 frames (see README, known issues)
+/public/images/spin/
+/public/images/products/*-new.*
