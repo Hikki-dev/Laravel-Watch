@@ -42,8 +42,8 @@ class UserManagement extends Component
 
     public function render()
     {
-        $users = User::where('name', 'like', '%'.$this->search.'%')
-            ->orWhere('email', 'like', '%'.$this->search.'%')
+        $users = User::whereLike('name', '%'.$this->search.'%')
+            ->orWhereLike('email', '%'.$this->search.'%')
             ->latest()
             ->paginate(10);
 

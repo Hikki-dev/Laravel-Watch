@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (DB::getDriverName() === 'sqlite') {
+        if (! in_array(DB::getDriverName(), ['mysql', 'mariadb'])) {
             Schema::table('product_images', function (Blueprint $table) {
                 $table->binary('image_data')->nullable();
             });

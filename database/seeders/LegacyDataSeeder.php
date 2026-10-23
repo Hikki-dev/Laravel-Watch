@@ -17,7 +17,7 @@ class LegacyDataSeeder extends Seeder
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin User',
-                'password' => bcrypt('password'),
+                'password' => bcrypt(env('SEED_PASSWORD', 'password')),
                 'role' => 'admin',
                 'is_active' => true,
             ]
@@ -27,7 +27,7 @@ class LegacyDataSeeder extends Seeder
             ['email' => 'seller@example.com'],
             [
                 'name' => 'John Seller',
-                'password' => bcrypt('password'),
+                'password' => bcrypt(env('SEED_PASSWORD', 'password')),
                 'role' => 'seller',
                 'is_active' => true,
                 'phone' => '123-456-7890',
@@ -42,7 +42,7 @@ class LegacyDataSeeder extends Seeder
             ['email' => 'customer@example.com'],
             [
                 'name' => 'Jane Customer',
-                'password' => bcrypt('password'),
+                'password' => bcrypt(env('SEED_PASSWORD', 'password')),
                 'role' => 'customer',
                 'is_active' => true,
                 'phone' => '987-654-3210',
@@ -114,28 +114,34 @@ class LegacyDataSeeder extends Seeder
                         'price' => 14500.00,
                         'model' => '126610LN',
                         'description' => 'The Oyster Perpetual Submariner Date in Oystersteel with a Cerachrom bezel insert in black ceramic and a black dial with large luminescent hour markers.',
-                        'image_url' => 'images/products/rolex-submariner-1.jpg'
+                        'image_url' => 'images/products/rolex-submariner-nodate-new.jpg',
+                        'image_fallback' => 'images/products/rolex-submariner-1.jpg'
                     ],
                     [
-                        'name' => 'Submariner "Hulk"',
+                        'name' => 'Submariner Date Bluesy',
                         'price' => 18500.00,
-                        'model' => '116610LV',
+                        'model' => '126613LB',
                         'description' => 'The Submariner Date with a green bezel and green dial, affectionately known as the "Hulk".',
-                        'image_url' => 'images/products/rolex-submariner-2.jpg'
+                        'image_url' => 'images/products/rolex-submariner-new.jpg',
+                        'image_fallback' => 'images/products/rolex-submariner-2.jpg'
                     ],
                     [
                         'name' => 'Daytona Panda',
                         'price' => 35000.00,
-                        'model' => '116500LN',
+                        'model' => '126500LN',
                         'description' => 'The Oyster Perpetual Cosmograph Daytona in Oystersteel with a white dial and black Cerachrom bezel.',
-                        'image_url' => 'images/products/rolex-submariner-2.jpg' // Placeholder
+                        'image_url' => 'images/products/rolex-daytona-new.jpg',
+                        'image_fallback' => 'images/products/rolex-submariner-2.jpg',
+                        // Real 360 turn (every other frame of the brand's own sequence), see public/images/spin
+                        'spin_frames' => array_map(fn ($i) => sprintf('/images/spin/rolex-daytona/f%04d.webp', $i), range(0, 128, 2))
                     ],
                     [
-                        'name' => 'GMT-Master II Pepsi',
+                        'name' => 'GMT-Master II Batman',
                         'price' => 22000.00,
-                        'model' => '126710BLRO',
+                        'model' => '126710BLNR',
                         'description' => 'Designed to show the time in two different time zones simultaneously, the GMT-Master II, launched in 1955, was originally developed as a navigation instrument for professionals criss-crossing the globe.',
-                        'image_url' => 'images/products/rolex-gmt-1.jpg'
+                        'image_url' => 'images/products/rolex-gmt-new.jpg',
+                        'image_fallback' => 'images/products/rolex-gmt-1.jpg'
                     ]
                 ];
                 break;
@@ -196,14 +202,16 @@ class LegacyDataSeeder extends Seeder
                         'price' => 45000.00,
                         'model' => '15500ST',
                         'description' => 'Experience the iconic Royal Oak, whose pioneering design and craftsmanship embody Audemars Piguet\'s uncompromising vision of luxury.',
-                        'image_url' => 'images/products/ap-royal-oak-1.jpg'
+                        'image_url' => 'images/products/ap-royal-oak-new.webp',
+                        'image_fallback' => 'images/products/ap-royal-oak-1.jpg'
                     ],
                     [
                         'name' => 'Royal Oak Offshore',
                         'price' => 55000.00,
                         'model' => '26420SO',
                         'description' => 'The Royal Oak Offshore collection defies conventions with its larger, more robust case and sporty aesthetic.',
-                        'image_url' => 'images/products/ap-royal-oak-2.jpg'
+                        'image_url' => 'images/products/ap-offshore-new.webp',
+                        'image_fallback' => 'images/products/ap-royal-oak-2.jpg'
                     ]
                 ];
                 break;
@@ -232,21 +240,26 @@ class LegacyDataSeeder extends Seeder
                         'price' => 150.00,
                         'model' => 'SB02B400',
                         'description' => 'The BIG BOLD CHRONO CHECKPOINT BLACK features a matte black dial with contrasting white and colored elements.',
-                        'image_url' => 'images/products/swatch-big-bold-chrono-1.jpg'
+                        'image_url' => 'images/products/swatch-big-bold-new.webp',
+                        'image_fallback' => 'images/products/swatch-big-bold-chrono-1.jpg',
+                        'spin_frames' => array_map(fn ($i) => sprintf('/images/spin/swatch-big-bold/f%02d.webp', $i), range(1, 60))
                     ],
                     [
                         'name' => 'Sistem51 Irony',
                         'price' => 215.00,
-                        'model' => 'YIS401G',
+                        'model' => 'YIB400',
                         'description' => 'SISTEM51 IRONY is the automatic watch for those who value clean, classic design.',
-                        'image_url' => 'images/products/swatch-sistem51-irony-1.jpg'
+                        'image_url' => 'images/products/swatch-sistem51-new.webp',
+                        'image_fallback' => 'images/products/swatch-sistem51-irony-1.jpg',
+                        'spin_frames' => array_map(fn ($i) => sprintf('/images/spin/swatch-sistem51/f%02d.webp', $i), range(1, 60))
                     ],
                     [
                         'name' => 'Skin Classic',
                         'price' => 125.00,
                         'model' => 'SFK361',
                         'description' => 'The ultra-thin SKIN CLASSIC watch features a transparent plastic case and a minimalist dial.',
-                        'image_url' => 'images/products/swatch-skin-classic-1.jpg'
+                        'image_url' => 'images/products/swatch-skin-new.webp',
+                        'image_fallback' => 'images/products/swatch-skin-classic-1.jpg'
                     ]
                 ];
                 break;
@@ -269,7 +282,9 @@ class LegacyDataSeeder extends Seeder
                     'is_featured' => true,
                     'is_active' => true,
                     'status' => 'approved',
-                    'image_url' => $productData['image_url'], // Update image URL
+                    // The brand photos and 360 frames are not committed (copyright), so fall back to the bundled photo.
+                    'image_url' => file_exists(public_path($productData['image_url'])) ? $productData['image_url'] : ($productData['image_fallback'] ?? $productData['image_url']),
+                    'spin_frames' => isset($productData['spin_frames']) && file_exists(public_path(ltrim($productData['spin_frames'][0], '/'))) ? $productData['spin_frames'] : null,
                     'movement_type' => 'Automatic',
                     'case_material' => 'Steel',
                     'dial_color' => 'Black',

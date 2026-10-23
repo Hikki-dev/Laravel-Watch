@@ -31,7 +31,7 @@ A luxury **watch marketplace** built with **Laravel 12**, **MySQL** and **Stripe
 
 ## Design
 
-Light by default with a dark toggle, self-hosted fonts, real brand logos and a drag-to-rotate 360 viewer for products that have frames. See [docs/DESIGN.md](docs/DESIGN.md).
+Light by default with a dark toggle, self-hosted fonts, real brand logos, photos that sit uncropped on a blurred backdrop, and a drag-to-rotate 360 viewer for products that have frames (the seeder wires up the Rolex Daytona and two Swatch models when their frame sets are present). See [docs/DESIGN.md](docs/DESIGN.md).
 
 ## Tech stack
 
@@ -40,7 +40,7 @@ Light by default with a dark toggle, self-hosted fonts, real brand logos and a d
 | Framework | Laravel 12, PHP 8.2+ |
 | Auth | Jetstream (Livewire stack), Fortify, Sanctum, Socialite (Google) |
 | UI | Blade, Livewire 3, Alpine.js, Tailwind CSS, Vite |
-| Database | MySQL in production (SQLite by default in `.env.example`) |
+| Database | MySQL or Postgres in production (SQLite by default in `.env.example`) |
 | Payments | Stripe Checkout and Stripe Connect (`stripe/stripe-php`) |
 | Deployment | Docker (`Dockerfile`) and `Procfile`, hosted on Railway |
 | Tests | PHPUnit 11 |
@@ -117,6 +117,7 @@ Feature tests cover registration and login, roles and redirects, API auth and to
 
 - **Free hosting**: see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). `render.yaml` deploys the Docker image to Render's free plan against a free TiDB Cloud (MySQL) database.
 - **Docker**: the `Dockerfile` builds PHP 8.2, installs Composer and Node dependencies, builds assets with Vite, and `docker-entrypoint.sh` runs `php artisan migrate --force` and `php artisan optimize` before serving on `$PORT`.
+- **Vercel + Neon Postgres**: `vercel.json` and `api/index.php` run the app on Vercel with the `vercel-php` runtime against a Neon database. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#vercel-and-neon-postgres).
 - **Procfile**: `web` clears caches, migrates against the `mysql` connection and runs `php artisan serve`.
 
 ## Known issues and security notes
@@ -125,7 +126,8 @@ Read these before exposing the app publicly:
 
 1. **Seeded sample accounts** use a known password. Never seed production.
 2. `GET /api/products` lists only approved, active products. Admin tokens see everything.
-3. **Images are stored in the database** (`image_data` columns) and an `/api/image-proxy` route serves files from `public/`. Fine for a prototype, but consider object storage at scale.
+3. **Third-party images are not in the repo.** The current Rolex, Audemars Piguet and Swatch photos and the 360 frames (`public/images/spin/`, `public/images/products/*-new.*`) belong to those brands and are git-ignored. The seeder falls back to the bundled photos when they are missing. Use them only in a private showcase.
+4. **Images are stored in the database** (`image_data` columns) and an `/api/image-proxy` route serves files from `public/`. Fine for a prototype, but consider object storage at scale.
 
 ## License
 

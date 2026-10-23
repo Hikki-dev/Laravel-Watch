@@ -14,9 +14,9 @@ class ProductSearch extends Component
         $products = [];
         
         if (strlen($this->search) >= 2) {
-            $products = Product::where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('brand', 'like', '%' . $this->search . '%')
-                ->where('is_active', true)
+            $products = Product::where('is_active', true)
+                ->where(fn ($q) => $q->whereLike('name', '%' . $this->search . '%')
+                    ->orWhereLike('brand', '%' . $this->search . '%'))
                 ->take(5)
                 ->get();
         }

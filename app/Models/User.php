@@ -107,4 +107,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Favorite::class);
     }
+
+    public function setProfilePhotoDataAttribute($value): void
+    {
+        $this->attributes['profile_photo_data'] = ProductImage::binary($value);
+    }
 }

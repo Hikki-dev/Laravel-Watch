@@ -1,0 +1,16 @@
+.git
+.env
+.env.*
+node_modules
+vendor
+tests
+storage/logs
+storage/framework
+.remember
+.DS_Store
+docs
+database/*.sqlite
+public/hot
+Dockerfile
+Procfile
+render.yaml

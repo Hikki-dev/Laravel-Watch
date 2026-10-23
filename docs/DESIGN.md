@@ -18,6 +18,7 @@ Self-hosted through `@fontsource` (no external font requests): Cormorant Garamon
 - `<x-theme-toggle />` the colour switch.
 - `<x-brand-logo :name="$brand" />` shows the logo from `public/images/brands/<file>.webp` on a white plate, falling back to the brand name. Logos cover Patek Philippe, Audemars Piguet, Rolex, Omega, Richard Mille, TAG Heuer, Swatch, Seiko, Casio and Citizen.
 - `<x-spin360 :frames="$urls" />` the 360 viewer.
+- `<x-watch-photo :src="$url" :alt="$name" />` shows any product photo uncropped over a blurred copy of itself, so black, white and studio backgrounds all sit seamlessly in the square stage.
 
 The wordmark comes from `config('app.brand')` (`APP_BRAND`, default `LUXWATCH`).
 
@@ -25,8 +26,10 @@ The wordmark comes from `config('app.brand')` (`APP_BRAND`, default `LUXWATCH`).
 
 `resources/js/spin360.js` turns any element marked `data-spin360 data-live` into a drag-to-rotate viewer with momentum, keyboard arrows, optional auto-spin and Front / Angle / Side / Back buttons (`data-s360-view`).
 
-The product page shows it when `products.spin_frames` (nullable JSON, an ordered list of frame URLs through one full turn) holds at least 8 entries, with a Photos / 360° switch. Otherwise it shows the photo gallery only. Shoot 36 to 120 frames of the watch on a plain background from a fixed camera, host them anywhere, and store the URLs in `spin_frames`.
+The product page shows it when `products.spin_frames` (nullable JSON, an ordered list of frame URLs through one full turn) holds at least 8 entries, with a Photos / 360° switch. Otherwise it shows the photo gallery only. Frames load only once the viewer scrolls into view (first frame first, the rest when idle). Use real photography or the brand's own renders: shoot 36 to 120 frames from a fixed camera and store the URLs in `spin_frames`. The seeder uses 65 frames for the Rolex Daytona and 60 each for the Swatch Big Bold Chrono and Sistem51, kept in `public/images/spin/<name>/` as 900 px WebP. Those frames are the brands' own images and are not committed; without them the seeder leaves `spin_frames` empty and the product page shows photos only.
 
 ## Assets
+
+Product photos in `public/images/products/*-new.*` come from the brands' official sites for a private showcase and are git-ignored. Older bundled photos remain as the seeder's fallback.
 
 Brand logos were cleaned (the supplied Audemars Piguet file had a baked-in checkerboard), cropped and converted to WebP.
