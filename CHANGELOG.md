@@ -8,7 +8,7 @@ The store goes online, and the repository is written up as a guided tour.
 
 * **New:** a live demo on Vercel with a Neon Postgres database
 * **New:** real 360 views, loaded only when they are on screen
-* **New:** the Rolex, Audemars Piguet and Swatch line up uses current models
+* **New:** the Rolex, Audemars Piguet and Swatch range uses current models
 * **New:** photos sit uncropped on a blurred backdrop, so any photo background fits
 * **New:** a Checks workflow runs the tests and builds the assets on every push
 * **New:** a README tour with screenshots, diagrams and guides in `docs/`
