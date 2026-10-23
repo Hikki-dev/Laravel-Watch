@@ -125,7 +125,7 @@ When a watch has a 360° set, a **360°** tab appears. You drag the watch round,
 
 <a href="docs/images/04-brands.png"><img src="docs/images/04-brands.png" alt="Brand page with a card for each watch maker" width="100%"></a>
 
-One card for each maker, with its logo and a short history. Admins approve new brands before they appear. Every logo comes from one shared component, so it looks the same on every page.
+One card for each maker, with its logo and a short description. Admins approve new brands before they appear. Every logo comes from one shared component, so it looks the same on every page.
 
 ### 5. Signing in
 
@@ -173,7 +173,7 @@ The same pages, laid out for a small screen. The 360° view works with a finger,
 | Database | SQLite to try it, MySQL or Postgres online |
 | Payments | Stripe Checkout and Stripe Connect |
 | Hosting | Vercel with Neon, or Docker on Render with TiDB |
-| Tests | PHPUnit, 91 tests, run on every push |
+| Tests | PHPUnit, over 90 tests, run on every push |
 
 The design is light by default with a dark switch, self hosted fonts (Cormorant Garamond, Hanken Grotesk and DM Mono) and one set of colour tokens that every page follows. Read [Design](docs/DESIGN.md) for the parts, [How it works](docs/How%20it%20works.md) for a map of the code, and [Roles and areas](docs/Roles%20and%20areas.md) for who can do what.
 
