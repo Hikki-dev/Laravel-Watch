@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" font-family="Helvetica, Arial, sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7a5c28"/></marker>
+<style>.b{fill:#fff;stroke:#d9d4c7;stroke-width:1.5}.h{fill:#f5f3ef}.t{font-size:15px;fill:#121315;font-weight:600}.s{font-size:12px;fill:#66625a}.n{font-size:11px;fill:#7a5c28;font-weight:600}.l{stroke:#7a5c28;stroke-width:1.6;fill:none}</style>
+</defs>
+<rect width="1000" height="470" fill="#f5f3ef"/>
+<text x="500" y="34" text-anchor="middle" class="t" font-size="18">One click on a watch, from browser to database</text>
+<rect class="b" x="30" y="70" width="190" height="150" rx="4"/><text x="125" y="100" text-anchor="middle" class="t">Visitor</text>
+<text x="125" y="124" text-anchor="middle" class="s">Browser or phone</text><text x="125" y="146" text-anchor="middle" class="s">Customer, seller</text><text x="125" y="164" text-anchor="middle" class="s">or admin</text>
+<rect class="b" x="30" y="260" width="190" height="150" rx="4"/><text x="125" y="290" text-anchor="middle" class="t">Flutter app</text>
+<text x="125" y="314" text-anchor="middle" class="s">Watch-final on a phone</text><text x="125" y="336" text-anchor="middle" class="s">talks to the REST API</text><text x="125" y="354" text-anchor="middle" class="s">with a Sanctum token</text>
+<rect class="b" x="330" y="70" width="330" height="340" rx="4"/><text x="495" y="100" text-anchor="middle" class="t">Vercel</text>
+<rect class="h" x="350" y="116" width="290" height="62" rx="3" stroke="#d9d4c7"/><text x="495" y="142" text-anchor="middle" class="t" font-size="14">Static files</text><text x="495" y="162" text-anchor="middle" class="s">photos, 360 frames, CSS, JS (cached)</text>
+<rect class="h" x="350" y="192" width="290" height="104" rx="3" stroke="#d9d4c7"/><text x="495" y="218" text-anchor="middle" class="t" font-size="14">Laravel 12 on vercel-php</text><text x="495" y="240" text-anchor="middle" class="s">Blade pages, Livewire search</text><text x="495" y="258" text-anchor="middle" class="s">Jetstream sign in, roles</text><text x="495" y="276" text-anchor="middle" class="s">REST API at /api</text>
+<rect class="h" x="350" y="310" width="290" height="80" rx="3" stroke="#d9d4c7"/><text x="495" y="336" text-anchor="middle" class="t" font-size="14">In the browser</text><text x="495" y="358" text-anchor="middle" class="s">Alpine tabs, drag to rotate</text><text x="495" y="376" text-anchor="middle" class="s">360 viewer (spin360.js)</text>
+<rect class="b" x="770" y="70" width="200" height="150" rx="4"/><text x="870" y="100" text-anchor="middle" class="t">Neon Postgres</text><text x="870" y="124" text-anchor="middle" class="s">Users, watches, brands</text><text x="870" y="142" text-anchor="middle" class="s">carts, orders, reviews</text><text x="870" y="160" text-anchor="middle" class="s">uploaded images (bytea)</text>
+<rect class="b" x="770" y="260" width="200" height="150" rx="4"/><text x="870" y="290" text-anchor="middle" class="t">Stripe</text><text x="870" y="314" text-anchor="middle" class="s">Checkout for buyers</text><text x="870" y="332" text-anchor="middle" class="s">Connect payouts</text><text x="870" y="350" text-anchor="middle" class="s">for sellers</text>
+<path class="l" d="M220 145 H330" marker-end="url(#a)"/><text x="275" y="136" text-anchor="middle" class="n">1</text>
+<path class="l" d="M220 335 H330" marker-end="url(#a)"/><text x="275" y="326" text-anchor="middle" class="n">2</text>
+<path class="l" d="M660 145 H770" marker-end="url(#a)"/><text x="715" y="136" text-anchor="middle" class="n">3</text>
+<path class="l" d="M660 335 H770" marker-end="url(#a)"/><text x="715" y="326" text-anchor="middle" class="n">4</text>
+<text x="500" y="448" text-anchor="middle" class="s">1 pages and photos   2 JSON from the API   3 queries over TLS (pooled)   4 test mode checkout</text>
+</svg>
