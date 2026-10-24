@@ -2,6 +2,7 @@ name: Production boot check
 on:
   push:
     branches: [fix/vercel-production-boot]
+  pull_request:
   workflow_dispatch:
 jobs:
   boot:
@@ -9,27 +10,34 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        stale: [false, true]
+        stale_cache: [false, true]
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-          extensions: mbstring, pdo_sqlite, pdo_pgsql, bcmath, gd, intl, zip
+          extensions: mbstring, pdo_sqlite, bcmath, gd, intl, zip
       - name: Install like Vercel (no dev packages)
         run: composer install --no-dev --optimize-autoloader --no-interaction --no-progress
-      - name: Simulate a stale dev machine cache
-        if: matrix.stale
+      - name: Build the assets (Vercel does not run npm for this PHP project)
+        run: npm ci --no-audit --no-fund && npm run build
+      - name: Simulate a package cache left over from a developer machine
+        if: matrix.stale_cache
         run: |
-          # what `php artisan package:discover` writes on a machine that HAS dev packages
-          composer require --dev laravel/pail:^1.2.2 --no-interaction --no-progress -W >/dev/null 2>&1 || true
-          php artisan package:discover >/dev/null 2>&1 || true
+          cp composer.json /tmp/composer.json.bak; cp composer.lock /tmp/composer.lock.bak
+          composer require --dev laravel/pail:^1.2.2 --no-interaction --no-progress -W >/dev/null 2>&1
+          php artisan package:discover >/dev/null 2>&1
           cp bootstrap/cache/packages.php /tmp/stale-packages.php; cp bootstrap/cache/services.php /tmp/stale-services.php
-          git checkout -- composer.json composer.lock
+          cp /tmp/composer.json.bak composer.json; cp /tmp/composer.lock.bak composer.lock
           composer install --no-dev --optimize-autoloader --no-interaction --no-progress
           cp /tmp/stale-packages.php bootstrap/cache/packages.php; cp /tmp/stale-services.php bootstrap/cache/services.php
-          grep -c Pail bootstrap/cache/packages.php || true
-      - name: Production-like environment
+          echo "stale files mention Pail: $(grep -c Pail bootstrap/cache/packages.php)"
+      - name: Apply what .vercelignore keeps out of the upload
+        run: |
+          grep -E '^bootstrap/cache' .vercelignore || { echo "::error::.vercelignore does not exclude bootstrap/cache/*.php"; exit 1; }
+          for pattern in $(grep -E '^bootstrap/cache' .vercelignore); do rm -f $pattern; done
+          ls bootstrap/cache
+      - name: Production-like environment (placeholder values only)
         run: |
           cp .env.example .env
           {
@@ -38,40 +46,18 @@ jobs:
             echo "SESSION_DRIVER=cookie"; echo "CACHE_STORE=file"; echo "QUEUE_CONNECTION=sync"
             echo "LOG_CHANNEL=stderr"; echo "FILESYSTEM_DISK=public"
           } >> .env
-          sed -i '/^APP_DEBUG=true$/{x;s/^/x/;/^x\{1\}$/{x;d};x}' .env || true
           php artisan key:generate --force
           touch database/database.sqlite
           php artisan migrate --seed --force >/dev/null
-      - name: Serve and request pages
+      - name: Boot with Vercel's environment and request the pages
         run: |
-          php -S 127.0.0.1:8000 -t public public/index.php > /tmp/serve.log 2>&1 &
-          sleep 3
-          for p in / /products /products/1 /login /api/products /up; do
-            echo "=== GET $p"; curl -s -o /tmp/body.txt -w "HTTP %{http_code}\n" -H "Accept: text/html" http://127.0.0.1:8000$p; head -c 600 /tmp/body.txt | tr '\n' ' '; echo
-          done
-          echo "=== server log"; tail -n 30 /tmp/serve.log
-      - name: Same, with Vercel's environment (VERCEL=1, /tmp cache paths)
-        run: |
-          pkill -f "php -S" || true
           export VERCEL=1 APP_CONFIG_CACHE=/tmp/config.php APP_EVENTS_CACHE=/tmp/events.php APP_PACKAGES_CACHE=/tmp/packages.php APP_ROUTES_CACHE=/tmp/routes.php APP_SERVICES_CACHE=/tmp/services.php VIEW_COMPILED_PATH=/tmp/storage/framework/views
           rm -f /tmp/packages.php /tmp/services.php
-          php -S 127.0.0.1:8001 -t public public/index.php > /tmp/serve2.log 2>&1 &
+          php -S 127.0.0.1:8000 -t public public/index.php > /tmp/serve.log 2>&1 &
           sleep 3
-          for p in / /products/1; do
-            echo "=== GET $p (vercel env)"; curl -s -o /tmp/body.txt -w "HTTP %{http_code}\n" http://127.0.0.1:8001$p; head -c 600 /tmp/body.txt | tr '\n' ' '; echo
+          fail=0
+          for p in / /products /products/1 /categories /login /register /api/products; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000$p); echo "GET $p -> $code"
+            [ "$code" = 200 ] || fail=1
           done
-          tail -n 20 /tmp/serve2.log
-      - name: What is the real error on a page? (JSON, debug on)
-        run: |
-          pkill -f "php -S" || true
-          php -S 127.0.0.1:8002 -t public public/index.php > /tmp/serve3.log 2>&1 &
-          sleep 3
-          curl -s -H "Accept: application/json" http://127.0.0.1:8002/ | python3 -c "import sys,json;d=json.load(sys.stdin);print('MESSAGE:',d.get('message','')[:300])" || true
-      - name: Build the assets like a developer machine does, then request again
-        run: |
-          npm ci --no-audit --no-fund >/dev/null 2>&1
-          npm run build >/dev/null 2>&1
-          pkill -f "php -S" || true
-          php -S 127.0.0.1:8003 -t public public/index.php > /tmp/serve4.log 2>&1 &
-          sleep 3
-          for p in / /products /products/1 /login; do echo "AFTER BUILD GET $p -> $(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8003$p)"; done
+          [ $fail = 0 ] || { echo "--- server log"; tail -n 30 /tmp/serve.log; exit 1; }
