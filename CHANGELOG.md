@@ -2,6 +2,15 @@
 
 What changed in each version, newest first.
 
+## 1.0.1 (24 October 2026)
+
+A sharper, more complete write up.
+
+* **New:** a page about the Flutter shopper app, and a short "two repos, one store" section in the README
+* **New:** an MIT licence for the code, and a social preview picture
+* **Better:** the screenshots of the public pages are retaken from the live demo at twice the sharpness
+* **Better:** the test count in the README is now the real one
+
 ## 1.0.0 (23 October 2026)
 
 The store goes online, and the repository is written up as a guided tour.
