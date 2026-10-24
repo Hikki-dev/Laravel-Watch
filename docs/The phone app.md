@@ -30,10 +30,12 @@ The app's own page, [Watch-final](https://github.com/Hikki-dev/Watch-final), lis
 
 ## Pointing the app at your store
 
-The app reads `API_BASE_URL` from its `.env` file. Set it to `https://<your-host>/api`. The app also lists a hard coded fallback address, which is an older host of this store, so set the variable rather than trusting the fallback.
+The app reads `API_BASE_URL` from its `.env` file. Set it to `https://<your-host>/api`.
+
+**On Vercel the address is different.** Vercel keeps its own `/api` folder for functions, so this store's API answers at `https://<your-host>/api/api`. The live demo's API is `https://luxwatch-livid.vercel.app/api/api`. The app also lists a hard coded fallback address, which is an older host of this store, so set the variable rather than trusting the fallback.
 
 To let the web version of the app call your API, put its address in `CORS_ALLOWED_ORIGINS`. See [Configuration](Configuration.md).
 
 ## If the app shows an empty list
 
-The app cannot reach the API, or `API_BASE_URL` is wrong. Open `https://<your-host>/api/products` in a browser. If you see JSON, the store is fine and the address in the app is the problem.
+The app cannot reach the API, or `API_BASE_URL` is wrong. Open `https://<your-host>/api/products` (or `/api/api/products` on Vercel) in a browser. If you see JSON, the store is fine and the address in the app is the problem.
