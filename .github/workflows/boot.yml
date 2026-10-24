@@ -1,0 +1,63 @@
+name: Production boot check
+on:
+  push:
+    branches: [fix/vercel-production-boot]
+  workflow_dispatch:
+jobs:
+  boot:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        stale: [false, true]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite, pdo_pgsql, bcmath, gd, intl, zip
+      - name: Install like Vercel (no dev packages)
+        run: composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+      - name: Simulate a stale dev machine cache
+        if: matrix.stale
+        run: |
+          # what `php artisan package:discover` writes on a machine that HAS dev packages
+          composer require --dev laravel/pail:^1.2.2 --no-interaction --no-progress -W >/dev/null 2>&1 || true
+          php artisan package:discover >/dev/null 2>&1 || true
+          cp bootstrap/cache/packages.php /tmp/stale-packages.php; cp bootstrap/cache/services.php /tmp/stale-services.php
+          git checkout -- composer.json composer.lock
+          composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+          cp /tmp/stale-packages.php bootstrap/cache/packages.php; cp /tmp/stale-services.php bootstrap/cache/services.php
+          grep -c Pail bootstrap/cache/packages.php || true
+      - name: Production-like environment
+        run: |
+          cp .env.example .env
+          {
+            echo "APP_ENV=production"; echo "APP_DEBUG=true"
+            echo "DB_CONNECTION=sqlite"; echo "DB_DATABASE=$PWD/database/database.sqlite"
+            echo "SESSION_DRIVER=cookie"; echo "CACHE_STORE=file"; echo "QUEUE_CONNECTION=sync"
+            echo "LOG_CHANNEL=stderr"; echo "FILESYSTEM_DISK=public"
+          } >> .env
+          sed -i '/^APP_DEBUG=true$/{x;s/^/x/;/^x\{1\}$/{x;d};x}' .env || true
+          php artisan key:generate --force
+          touch database/database.sqlite
+          php artisan migrate --seed --force >/dev/null
+      - name: Serve and request pages
+        run: |
+          php -S 127.0.0.1:8000 -t public public/index.php > /tmp/serve.log 2>&1 &
+          sleep 3
+          for p in / /products /products/1 /login /api/products /up; do
+            echo "=== GET $p"; curl -s -o /tmp/body.txt -w "HTTP %{http_code}\n" -H "Accept: text/html" http://127.0.0.1:8000$p; head -c 600 /tmp/body.txt | tr '\n' ' '; echo
+          done
+          echo "=== server log"; tail -n 30 /tmp/serve.log
+      - name: Same, with Vercel's environment (VERCEL=1, /tmp cache paths)
+        run: |
+          pkill -f "php -S" || true
+          export VERCEL=1 APP_CONFIG_CACHE=/tmp/config.php APP_EVENTS_CACHE=/tmp/events.php APP_PACKAGES_CACHE=/tmp/packages.php APP_ROUTES_CACHE=/tmp/routes.php APP_SERVICES_CACHE=/tmp/services.php VIEW_COMPILED_PATH=/tmp/storage/framework/views
+          rm -f /tmp/packages.php /tmp/services.php
+          php -S 127.0.0.1:8001 -t public public/index.php > /tmp/serve2.log 2>&1 &
+          sleep 3
+          for p in / /products/1; do
+            echo "=== GET $p (vercel env)"; curl -s -o /tmp/body.txt -w "HTTP %{http_code}\n" http://127.0.0.1:8001$p; head -c 600 /tmp/body.txt | tr '\n' ' '; echo
+          done
+          tail -n 20 /tmp/serve2.log
