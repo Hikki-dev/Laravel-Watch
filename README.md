@@ -9,9 +9,11 @@
 
 A luxury watch marketplace you can try in your browser. Buyers find a watch and turn it in their hands, sellers list their own, and an admin approves everything before it goes live.
 
-<p align="center"><a href="https://luxwatch-livid.vercel.app"><img src="docs/images/01-home.png" alt="The LUXWATCH home page: a large headline, a featured Rolex and a row of brand logos" width="100%"></a></p>
+<p align="center"><a href="https://luxwatch-livid.vercel.app"><img src="docs/images/01-home.jpg" alt="The LUXWATCH home page: a large headline, a featured Rolex and a row of brand logos" width="100%"></a></p>
 
-It is a portfolio project, built to show how a careful, well designed store is put together from the first page to the payout. It also powers the [Watch-final](https://github.com/Hikki-dev/Watch-final) Flutter app through a REST API.
+It is a portfolio project, built to show how a careful, well designed store is put together from the first page to the payout.
+
+**This is one half of a pair.** Laravel-Watch is the **marketplace**: the website, the database and the REST API. [Watch-final](https://github.com/Hikki-dev/Watch-final) is the **shopper app**: a Flutter app that signs people in with Firebase and then talks to this store's API. Read [The phone app](docs/The%20phone%20app.md) to see how the two meet.
 
 You do not need to know Laravel to follow this page. Everything is explained in plain words, one step at a time.
 
@@ -19,6 +21,7 @@ You do not need to know Laravel to follow this page. Everything is explained in 
 
 * [What you get](#what-you-get): the parts of the store
 * [How everything fits together](#how-everything-fits-together): from a click to the database
+* [Two repos, one store](#two-repos-one-store): the marketplace and the shopper app
 * [Try it first](#try-it-first): the live demo
 * [Before you start](#before-you-start): what your computer needs
 * [Run it](#run-it): ten minutes to a working store
@@ -62,6 +65,17 @@ A visitor opens a page. Vercel serves the photos and scripts straight away, and 
 
 The full story of one watch, from a seller listing it to a customer receiving it, is in [How everything fits](docs/How%20everything%20fits.md).
 
+## Two repos, one store
+
+| | Laravel-Watch (this repo) | [Watch-final](https://github.com/Hikki-dev/Watch-final) |
+|---|---|---|
+| **Role** | The marketplace: website, database, API | The shopper app on phones, tablets and the web |
+| **Built with** | Laravel 12, Livewire, Postgres or MySQL | Flutter, Firebase sign in, Hive cache |
+| **Who uses it** | Customers, sellers and admins, in a browser | Customers, sellers and admins, in the app |
+| **Holds the data?** | Yes. Watches, orders and accounts live here | No. It asks this API for everything and keeps a local copy to start fast |
+
+The app signs a person in with Firebase, then trades that sign in for an API token at `POST /api/auth/google`. From then on every request carries the token, and the roles checked on the website are checked on the API too. The routes the app uses are listed in the [API reference](docs/API.md).
+
 ## Try it first
 
 **[Open the live demo](https://luxwatch-livid.vercel.app).** Browse the collection, search, filter by brand, open a watch and register as a customer. Nothing is sold, and no real money moves.
@@ -97,23 +111,23 @@ More detail, and what to do if something does not work, is in [Getting started](
 
 ## A tour of the store
 
-Every picture below was taken from a fresh clone of this repository, so what you see is what you get. Click a picture to see it full size.
+Pictures 1 to 5 and the phone pictures were taken from the live demo at twice the usual sharpness. The signed in screens (6 to 10) use the sample accounts, which the live demo keeps private. Click a picture to see it full size.
 
 ### 1. The home page
 
-<a href="docs/images/01-home.png"><img src="docs/images/01-home.png" alt="Home page with a headline, a featured watch and a scrolling row of brand logos" width="100%"></a>
+<a href="docs/images/01-home.jpg"><img src="docs/images/01-home.jpg" alt="Home page with a headline, a featured watch and a scrolling row of brand logos" width="100%"></a>
 
 A big headline, one featured watch and a row of real brand logos that scrolls by itself. Under it come the newest arrivals and a shortcut to each brand. The moon button switches to the dark theme, and your choice is remembered.
 
 ### 2. The collection
 
-<a href="docs/images/02-collection.png"><img src="docs/images/02-collection.png" alt="Collection page with search, price and brand filters and a grid of watches" width="100%"></a>
+<a href="docs/images/02-collection.jpg"><img src="docs/images/02-collection.jpg" alt="Collection page with search, price and brand filters and a grid of watches" width="100%"></a>
 
 Every approved watch, with a search box, a price range and a brand list on the left. Search is live: it answers while you type. Photos from different sources, with black, white or studio backgrounds, all sit neatly in the same square.
 
 ### 3. A watch up close
 
-<a href="docs/images/03-watch.png"><img src="docs/images/03-watch.png" alt="A watch page with a large photo, the brand logo, price, description and specifications" width="100%"></a>
+<a href="docs/images/03-watch.jpg"><img src="docs/images/03-watch.jpg" alt="A watch page with a large photo, the brand logo, price, description and specifications" width="100%"></a>
 
 The photo, the brand, the reference number, the price and a plain description. Below come the technical details: movement, case, dial, strap and water resistance.
 
@@ -123,13 +137,13 @@ When a watch has a 360° set, a **360°** tab appears. You drag the watch round,
 
 ### 4. Brands
 
-<a href="docs/images/04-brands.png"><img src="docs/images/04-brands.png" alt="Brand page with a card for each watch maker" width="100%"></a>
+<a href="docs/images/04-brands.jpg"><img src="docs/images/04-brands.jpg" alt="Brand page with a card for each watch maker" width="100%"></a>
 
 One card for each maker, with its logo and a short description. Admins approve new brands before they appear. Every logo comes from one shared component, so it looks the same on every page.
 
 ### 5. Signing in
 
-<a href="docs/images/05-sign-in.png"><img src="docs/images/05-sign-in.png" alt="The sign in page" width="100%"></a>
+<a href="docs/images/05-sign-in.jpg"><img src="docs/images/05-sign-in.jpg" alt="The sign in page" width="100%"></a>
 
 Email and password, or Google. Two factor sign in and personal API tokens are in the profile. An account can be switched off by an admin, and it is signed out on its next click.
 
@@ -159,7 +173,7 @@ The admin sees the whole store at a glance: products, customers, orders and reve
 
 ### 9. On a phone
 
-<p align="center"><img src="docs/images/mobile-home.png" alt="The home page on a phone" width="32%"> <img src="docs/images/mobile-watch.png" alt="A watch page on a phone" width="32%"></p>
+<p align="center"><img src="docs/images/mobile-home.jpg" alt="The home page on a phone" width="32%"> <img src="docs/images/mobile-watch.jpg" alt="A watch page on a phone" width="32%"></p>
 
 The same pages, laid out for a small screen. The 360° view works with a finger, and horizontal drags turn the watch while up and down still scrolls the page.
 
@@ -173,7 +187,7 @@ The same pages, laid out for a small screen. The 360° view works with a finger,
 | Database | SQLite to try it, MySQL or Postgres online |
 | Payments | Stripe Checkout and Stripe Connect |
 | Hosting | Vercel with Neon, or Docker on Render with TiDB |
-| Tests | PHPUnit, over 90 tests, run on every push |
+| Tests | PHPUnit, 92 tests, run on every push |
 
 The design is light by default with a dark switch, self hosted fonts (Cormorant Garamond, Hanken Grotesk and DM Mono) and one set of colour tokens that every page follows. Read [Design](docs/DESIGN.md) for the parts, [How it works](docs/How%20it%20works.md) for a map of the code, and [Roles and areas](docs/Roles%20and%20areas.md) for who can do what.
 
@@ -196,6 +210,7 @@ To report a security problem, read [SECURITY.md](SECURITY.md).
 | If you want to | Read |
 |---|---|
 | Run it on your computer | [Getting started](docs/Getting%20started.md) |
+| See how the Flutter app uses this store | [The phone app](docs/The%20phone%20app.md) |
 | Follow one watch from listing to delivery | [How everything fits](docs/How%20everything%20fits.md) |
 | Know who can do what | [Roles and areas](docs/Roles%20and%20areas.md) |
 | Add or change a 360° view | [The 360 viewer](docs/The%20360%20viewer.md) |
@@ -213,7 +228,7 @@ To report a security problem, read [SECURITY.md](SECURITY.md).
 
 * This is a demonstration. It sells nothing, and any brand names are used only to describe the watches.
 * **Brand photos and 360 frames.** The newest Rolex, Audemars Piguet and Swatch photos and turns used for the live demo belong to those brands. They are not in this repository (`public/images/spin/` and `public/images/products/*-new.*` are git ignored). Older photos that are in the repository are also third party pictures kept for a private showcase. Do not reuse them elsewhere, and replace them with your own before showing the store to the public.
-* The code is yours to learn from. No separate licence is declared for it yet.
+* The code is under the [MIT licence](LICENSE). That covers the code only, not the third party photos above.
 * It is provided as it is, with no promises.
 
 ## Contributing

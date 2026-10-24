@@ -1,6 +1,6 @@
 # REST API
 
-Base URL: `https://<your-host>/api`. JSON in and out. Authenticated routes need `Authorization: Bearer <token>` (Laravel Sanctum). The Flutter app [Watch-final](https://github.com/Hikki-dev/Watch-final) is the main client.
+Base URL: `https://<your-host>/api`. On Vercel it is `https://<your-host>/api/api`, because Vercel uses `/api` for its own functions. JSON in and out. Authenticated routes need `Authorization: Bearer <token>` (Laravel Sanctum). The Flutter app [Watch-final](https://github.com/Hikki-dev/Watch-final) is the main client.
 
 ## Authentication
 
