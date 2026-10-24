@@ -2,6 +2,12 @@
 
 What changed in each version, newest first.
 
+## 1.0.2 (24 October 2026)
+
+* **Fixed:** the package cache from a developer machine is no longer uploaded to Vercel, where it listed a development only package and stopped the app from starting
+* **New:** a check on every push that boots the app with production packages, built assets and Vercel's settings
+* **Better:** the guide for fixing problems explains the two causes of an empty error page on Vercel
+
 ## 1.0.1 (24 October 2026)
 
 A sharper, more complete write up.

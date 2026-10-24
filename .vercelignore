@@ -14,3 +14,5 @@ public/hot
 Dockerfile
 Procfile
 render.yaml
+# Caches written on a developer machine list dev-only packages (laravel/pail) and crash a production boot
+bootstrap/cache/*.php

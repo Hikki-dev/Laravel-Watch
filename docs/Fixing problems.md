@@ -44,3 +44,12 @@ Make sure you are on the latest code. Postgres hands back binary columns as a st
 ## Still stuck
 
 Open an [issue](https://github.com/Hikki-dev/Laravel-Watch/issues/new/choose) with what you did, what you expected and what happened.
+
+## Every page shows an empty error on Vercel, but the API still answers
+
+Two things cause this, and both were reproduced on a clean machine:
+
+* **The assets were not built.** The pages need `public/build/manifest.json`. Vercel does not run `npm` for this PHP project, so run `npm run build` on your own machine before `vercel deploy --prod`. Without it every web page fails with "Vite manifest not found", while `/api/api/products` and `/up` still work.
+* **A package cache from your own machine went up with the code.** `bootstrap/cache/packages.php` and `services.php` list development packages such as `laravel/pail`. On Vercel those packages are not installed, so the app stops with "Class Laravel\Pail\PailServiceProvider not found". `.vercelignore` now keeps these files out of the upload.
+
+To see the real error, set `APP_DEBUG=true` on a preview deployment only, then ask for the page with `Accept: application/json`.

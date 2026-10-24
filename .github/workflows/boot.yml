@@ -1,0 +1,63 @@
+name: Production boot check
+on:
+  push:
+    branches: [fix/vercel-production-boot]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  boot:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        stale_cache: [false, true]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite, bcmath, gd, intl, zip
+      - name: Install like Vercel (no dev packages)
+        run: composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+      - name: Build the assets (Vercel does not run npm for this PHP project)
+        run: npm ci --no-audit --no-fund && npm run build
+      - name: Simulate a package cache left over from a developer machine
+        if: matrix.stale_cache
+        run: |
+          cp composer.json /tmp/composer.json.bak; cp composer.lock /tmp/composer.lock.bak
+          composer require --dev laravel/pail:^1.2.2 --no-interaction --no-progress -W >/dev/null 2>&1
+          php artisan package:discover >/dev/null 2>&1
+          cp bootstrap/cache/packages.php /tmp/stale-packages.php; cp bootstrap/cache/services.php /tmp/stale-services.php
+          cp /tmp/composer.json.bak composer.json; cp /tmp/composer.lock.bak composer.lock
+          composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+          cp /tmp/stale-packages.php bootstrap/cache/packages.php; cp /tmp/stale-services.php bootstrap/cache/services.php
+          echo "stale files mention Pail: $(grep -c Pail bootstrap/cache/packages.php)"
+      - name: Apply what .vercelignore keeps out of the upload
+        run: |
+          grep -E '^bootstrap/cache' .vercelignore || { echo "::error::.vercelignore does not exclude bootstrap/cache/*.php"; exit 1; }
+          for pattern in $(grep -E '^bootstrap/cache' .vercelignore); do rm -f $pattern; done
+          ls bootstrap/cache
+      - name: Production-like environment (placeholder values only)
+        run: |
+          cp .env.example .env
+          {
+            echo "APP_ENV=production"; echo "APP_DEBUG=true"
+            echo "DB_CONNECTION=sqlite"; echo "DB_DATABASE=$PWD/database/database.sqlite"
+            echo "SESSION_DRIVER=cookie"; echo "CACHE_STORE=file"; echo "QUEUE_CONNECTION=sync"
+            echo "LOG_CHANNEL=stderr"; echo "FILESYSTEM_DISK=public"
+          } >> .env
+          php artisan key:generate --force
+          touch database/database.sqlite
+          php artisan migrate --seed --force >/dev/null
+      - name: Boot with Vercel's environment and request the pages
+        run: |
+          export VERCEL=1 APP_CONFIG_CACHE=/tmp/config.php APP_EVENTS_CACHE=/tmp/events.php APP_PACKAGES_CACHE=/tmp/packages.php APP_ROUTES_CACHE=/tmp/routes.php APP_SERVICES_CACHE=/tmp/services.php VIEW_COMPILED_PATH=/tmp/storage/framework/views
+          rm -f /tmp/packages.php /tmp/services.php
+          php -S 127.0.0.1:8000 -t public public/index.php > /tmp/serve.log 2>&1 &
+          sleep 3
+          fail=0
+          for p in / /products /products/1 /categories /login /register /api/products; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000$p); echo "GET $p -> $code"
+            [ "$code" = 200 ] || fail=1
+          done
+          [ $fail = 0 ] || { echo "--- server log"; tail -n 30 /tmp/serve.log; exit 1; }
