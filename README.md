@@ -165,7 +165,15 @@ Scroll on for the details:
 
 ### 5. The 360° view
 
-When a watch has a 360° set, a **360°** tab appears next to the photos. You drag the watch round, and buttons jump to the front, the angle, the side or the case back. It is a row of photos, not a 3D model, so it is smooth even on a phone. The full story is in [The 360 viewer](docs/The%20360%20viewer.md).
+<a href="docs/images/19-360-tab.jpg"><img src="docs/images/19-360-tab.jpg" alt="A watch page with the 360 tab selected, a Rolex Daytona turning on its backdrop and the buttons Front, Angle, Side and Case back" width="100%"></a>
+
+**What you see.** When a watch has a 360° set, a **360°** tab appears next to **Photos**. The watch turns by itself at first, and "Drag to rotate" sits under it. Four buttons jump to a view: **Front**, **Angle**, **Side** and **Case back**.
+
+**What to do.** Drag across the watch to turn it. This is how it looks when dragged from the case back round to the side (the demo's Rolex Daytona, 65 photos):
+
+<a href="docs/images/18-360-strip.jpg"><img src="docs/images/18-360-strip.jpg" alt="Four moments of the same watch turning: the case back, a three quarter view, a side view and the case back again" width="100%"></a>
+
+**Good to know.** It is a row of photos, not a 3D model, so it is smooth even on a phone. The full story is in [The 360 viewer](docs/The%20360%20viewer.md).
 
 ![How a row of photos becomes a turning watch](docs/images/viewer-360.svg)
 
@@ -262,6 +270,27 @@ When a watch has a 360° set, a **360°** tab appears next to the photos. You dr
 <a href="docs/images/admin-orders.jpg"><img src="docs/images/admin-orders.jpg" alt="The Order Management table, empty" width="100%"></a>
 
 **Orders** lists every order in the store with its customer, total, status and date. It is empty here because nothing has been bought in the sample data.
+
+
+#### The whole approval round trip
+
+This is the heart of the store, tried end to end on the local copy with the sample accounts. A seller lists a watch, nobody can see it until an admin says yes, and then it appears in the shop.
+
+**1. The seller adds a watch.** The form asks for the name, category, description, brand, model, price, stock and photos (or a link to a photo), then **Save Product**.
+
+<a href="docs/images/seller-add-product.jpg"><img src="docs/images/seller-add-product.jpg" alt="The Add Product form filled in by a seller" width="100%"></a>
+
+**2. It waits.** The new watch shows in the seller's list with the status **Waiting Approval**. The shop still shows 17 watches.
+
+<a href="docs/images/seller-pending.jpg"><img src="docs/images/seller-pending.jpg" alt="The seller's My Products list with the new watch marked Waiting Approval" width="100%"></a>
+
+**3. The admin decides.** The watch is on the admin's **Pending Approvals** page, with **View**, **Approve** and **Reject** next to it.
+
+<a href="docs/images/admin-pending-approval.jpg"><img src="docs/images/admin-pending-approval.jpg" alt="The admin Pending Approvals page with the new watch and its View, Approve and Reject links" width="100%"></a>
+
+**4. It goes live.** After **Approve** the approvals list is empty, the shop shows 18 watches, and searching for the new watch finds it.
+
+<a href="docs/images/shop-after-approval.jpg"><img src="docs/images/shop-after-approval.jpg" alt="The shop search results showing the newly approved watch" width="100%"></a>
 
 ### Who can open what
 
