@@ -1,0 +1,30 @@
+name: PHP runtime versions
+on:
+  workflow_dispatch:
+  push:
+    branches: [fix/vercel-production-boot]
+    paths: [".github/workflows/runtime.yml", "vercel.json", "Dockerfile"]
+jobs:
+  runtimes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Which runtime does vercel.json use?
+        run: grep -n '"use"' vercel.json
+      - name: PHP bundled by vercel-php 0.7.4 (PHP 8.3)
+        run: |
+          mkdir -p /tmp/p83 && cd /tmp/p83 && npm pack @libphp/amazon-linux-2-v83@latest >/dev/null 2>&1 && tar xzf *.tgz
+          ls package | head; B=$(find package -type f -name php -perm -u+x | head -1); echo "binary: $B"
+          docker run --rm -v /tmp/p83/package:/p amazonlinux:2 sh -c "export LD_LIBRARY_PATH=\$(find /p -type d -name lib | tr '\n' ':'); $(echo $B | sed 's#^package#/p#') -v" 2>&1 | head -3
+      - name: PHP bundled by vercel-php 0.9.0 (PHP 8.5)
+        run: |
+          mkdir -p /tmp/p85 && cd /tmp/p85 && npm pack @libphp/almalinux-9-v85@latest >/dev/null 2>&1 && tar xzf *.tgz
+          ls package | head; B=$(find package -type f -name 'php*' -perm -u+x | head -3); echo "binaries: $B"
+          docker run --rm -v /tmp/p85/package:/p almalinux:9 sh -c 'export LD_LIBRARY_PATH=$(find /p -type d -name lib | tr "\n" ":"); for f in $(find /p -type f -name "php*" -perm -u+x | head -3); do echo $f; $f -v 2>&1 | head -2; done'
+      - name: PHP in the Dockerfile base image
+        run: |
+          grep -n '^FROM' Dockerfile
+          docker run --rm php:8.2-bookworm php -v | head -1
+      - name: PHP on the CI runner
+        run: |
+          php -v | head -1
