@@ -119,7 +119,7 @@ More detail, and what to do if something does not work, is in [Getting started](
 
 ## The store, step by step
 
-This walkthrough follows a visitor from the first page to the admin tools. Pictures 1 to 5 and 9 to 14 (the public pages and the phone) were taken from the live demo at twice the usual sharpness. The signed in screens in steps 11 to 13 use the sample accounts, which the live demo keeps private. Click a picture to see it full size.
+This walkthrough follows a visitor from the first page to the admin tools. Pictures 1 to 10 and 14 (the public pages and the phone) were taken from the live demo at twice the usual sharpness. The signed in screens in steps 11 to 13 were taken from a copy of the store running on `localhost` with the sample data and the sample accounts, because the live demo keeps its accounts private. Click a picture to see it full size.
 
 ### 1. The home page
 
@@ -215,35 +215,57 @@ When a watch has a 360° set, a **360°** tab appears next to the photos. You dr
 
 ### 11. The customer area
 
-<a href="docs/images/06-customer.png"><img src="docs/images/06-customer.png" alt="Customer dashboard with recent orders" width="100%"></a>
+<a href="docs/images/customer-dashboard.jpg"><img src="docs/images/customer-dashboard.jpg" alt="The customer dashboard: a welcome, recent orders and account settings" width="100%"></a>
 
-**What you see.** A customer sees their recent orders.
+**What you see.** After signing in as a customer you land on the home page, and your dashboard is one click away. It says "Welcome back" with your name, lists your recent orders (with **Start Shopping** while there are none) and links to your **Profile Information** and **My Cart**.
 
-**What to do.** Add watches to a cart, pay with Stripe, and keep favourites. Tax of 8% is added at checkout. Cards are typed on Stripe, never on this site.
+**What to do.** Open a watch and press the add to cart button. Your cart comes next.
+
+<a href="docs/images/customer-cart.jpg"><img src="docs/images/customer-cart.jpg" alt="The shopping cart with one watch, a quantity stepper and an order summary" width="100%"></a>
+
+**The cart.** Each watch shows its brand, reference and price with a quantity stepper and a **Remove** link. The **Order Summary** adds the subtotal, shipping (free), tax at 8% and the total. **Proceed to Checkout** continues, and **Continue Shopping** goes back.
+
+<a href="docs/images/customer-checkout.jpg"><img src="docs/images/customer-checkout.jpg" alt="The checkout page with address, city, postal code and country, and a Pay with Stripe button showing the total" width="100%"></a>
+
+**Checkout.** Fill in the address, city, postal code and country. The button reads **Pay with Stripe** and shows the total. In this walkthrough a $14,500 watch comes to $15,660.00 with 8% tax. The card itself is typed on Stripe, never on this site, and the picture stops before the payment because the local copy has no Stripe keys.
+
+<a href="docs/images/customer-orders.jpg"><img src="docs/images/customer-orders.jpg" alt="The My Orders page with no orders yet" width="100%"></a>
+
+**My orders.** Paid orders appear here. A new account has none yet, as shown.
 
 ### 12. The seller area
 
-<a href="docs/images/07-seller.png"><img src="docs/images/07-seller.png" alt="Seller dashboard with revenue and order figures" width="100%"></a>
+<a href="docs/images/seller-dashboard.jpg"><img src="docs/images/seller-dashboard.jpg" alt="The seller dashboard with revenue, total products, approved and pending counts, recent products and quick actions" width="100%"></a>
 
-**What you see.** Sellers list their own watches and brands, see only their own orders, and move each one from pending to accepted to shipped.
+**What you see.** A seller lands on their own dashboard: **My Revenue**, **Total Products**, **Approved** and **Pending** counts, a table of recent products, and quick actions to **Add Product**, **Add New Brand** and **Connect with Stripe**.
 
-**What to do.** Connect Stripe so you can be paid. Everything a seller adds waits for an admin.
+**What to do.** Connect Stripe so you can be paid, then list a watch. Everything a seller adds waits for an admin.
+
+<a href="docs/images/seller-products.jpg"><img src="docs/images/seller-products.jpg" alt="The My Products table with product, brand, price, stock, status and an Edit link" width="100%"></a>
+
+**My products.** One row for each of the seller's watches with its brand, price, stock and status (**Approved** or waiting), and an **Edit** link. **Add New Product** is at the top. A seller only ever sees their own products and orders, and moves each order from pending to accepted to shipped.
 
 ### 13. The admin area and approvals
 
-<a href="docs/images/08-admin.png"><img src="docs/images/08-admin.png" alt="Admin dashboard with totals for products, customers, orders and revenue" width="100%"></a>
+<a href="docs/images/admin-dashboard.jpg"><img src="docs/images/admin-dashboard.jpg" alt="The admin dashboard with totals for products, registered customers, orders and revenue, and lists of latest orders, products and customers" width="100%"></a>
 
-**What you see.** The admin sees the whole store at a glance: products, customers, orders and revenue. From here they manage users and read every order.
+**What you see.** The admin sees the whole store at a glance: **Total Products**, **Registered Customers**, **Total Orders** and **Total Revenue**, with the latest orders, products, customers and reviews under them. The menu at the top leads to **Users**, **Orders**, **Approvals** and **Products**.
 
-<a href="docs/images/09-approvals.png"><img src="docs/images/09-approvals.png" alt="The approvals page listing watches and brands waiting for a decision" width="100%"></a>
+<a href="docs/images/admin-users.jpg"><img src="docs/images/admin-users.jpg" alt="User management: a search box and a table of users with their role and status" width="100%"></a>
 
-**Approvals** is where watches and brands wait. Only what an admin approves is shown in the shop, so what a visitor sees is what they can buy.
+**Users.** Search by name or email. Each person shows their role (customer, seller or admin) and whether the account is active, with **Edit** and **Delete**. **Add New User** creates an account by hand.
 
-<a href="docs/images/10-orders.png"><img src="docs/images/10-orders.png" alt="The admin orders list" width="100%"></a>
+<a href="docs/images/admin-approvals.jpg"><img src="docs/images/admin-approvals.jpg" alt="The Pending Approvals page with tabs for product approvals and brand approvals, empty" width="100%"></a>
 
-**Orders** lists every order in the store.
+**Approvals** is where watches and brands wait, on two tabs: **Product Approvals** and **Brand Approvals**. Only what an admin approves is shown in the shop, so what a visitor sees is what they can buy. The picture shows it empty, because the sample data is already approved.
 
-> The pictures in steps 11 to 13 were taken earlier from a copy running with the sample accounts, at normal sharpness. They are the only ones that are not retaken from the live demo.
+<a href="docs/images/admin-orders.jpg"><img src="docs/images/admin-orders.jpg" alt="The Order Management table, empty" width="100%"></a>
+
+**Orders** lists every order in the store with its customer, total, status and date. It is empty here because nothing has been bought in the sample data.
+
+### Who can open what
+
+The pages check who you are. In a test run with the sample accounts: a signed out visitor who opens the cart, orders, checkout, seller or admin pages is sent to the sign in page. A customer who opens an admin or seller page is sent back to the home page. A seller who opens an admin page is sent to the seller dashboard. [Roles and areas](docs/Roles%20and%20areas.md) explains the rules.
 
 ### 14. On a phone
 
