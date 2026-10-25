@@ -25,5 +25,3 @@ What this means for this project:
 * **Vercel.** `vercel.json` uses the `vercel-php@0.9.0` runtime, which ships PHP 8.5.12. The older `vercel-php@0.7.4` runtime ships PHP 8.3.8, which does not have the fix, and no newer PHP 8.3 build of it exists. Do not go back to it. The Production boot check workflow fails if the PHP in the selected runtime is older than the fixed release.
 * **Docker.** The `Dockerfile` starts from `php:8.2-bookworm`. A fresh build gets the current 8.2 release (8.2.35 when checked on 24 October 2026), so rebuild and redeploy images that were built earlier.
 * **Your own server.** Update PHP to a fixed release. Laravel 12 runs on PHP 8.2 to 8.5.
-
-The runtime check is repeatable: open the Actions tab and run **PHP runtime versions**.
