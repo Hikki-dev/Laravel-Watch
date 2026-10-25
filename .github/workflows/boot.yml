@@ -58,7 +58,7 @@ jobs:
           sleep 3
           fail=0
           for p in / /products /products/1 /categories /login /register /api/products; do
-            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000$p); echo "GET $p -> $code"
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000$p || true); echo "GET $p -> $code"
             [ "$code" = 200 ] || fail=1
           done
           [ $fail = 0 ] || { echo "--- server log"; tail -n 30 /tmp/serve.log; exit 1; }
@@ -109,7 +109,7 @@ jobs:
           sleep 5
           fail=0
           for p in / /products /products/1 /categories /login /register /api/products /up; do
-            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000$p); echo "GET $p -> $code"; [ "$code" = 200 ] || fail=1
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000$p || true); echo "GET $p -> $code"; [ "$code" = 200 ] || fail=1
           done
           [ $fail = 0 ] || { docker logs app 2>&1 | tail -30; exit 1; }
       - name: Fail if the bundle is older than the October 2026 security releases
