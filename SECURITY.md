@@ -15,3 +15,13 @@ Please do not open a public issue for a security problem. Use GitHub's private r
 ## Keys and settings
 
 Real keys belong in the host's environment settings, never in git. See [Configuration](docs/Configuration.md).
+
+## PHP security releases (October 2026)
+
+Two critical PHP flaws, CVE-2026-109618 and CVE-2026-109619 (nicknamed PHP2Shell), let an attacker run code on a server without signing in. They are fixed in PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35, released on 21 October 2026. A third flaw, CVE-2026-115560, was disclosed on 23 October. It affects only unusually configured applications and had no patch when this was written, so follow the PHP security announcements.
+
+What this means for this project:
+
+* **Vercel.** `vercel.json` uses the `vercel-php@0.9.0` runtime, which ships PHP 8.5.12. The older `vercel-php@0.7.4` runtime ships PHP 8.3.8, which does not have the fix, and no newer PHP 8.3 build of it exists. Do not go back to it. The Production boot check workflow fails if the PHP in the selected runtime is older than the fixed release.
+* **Docker.** The `Dockerfile` starts from `php:8.2-bookworm`. A fresh build gets the current 8.2 release (8.2.35 when checked on 24 October 2026), so rebuild and redeploy images that were built earlier.
+* **Your own server.** Update PHP to a fixed release. Laravel 12 runs on PHP 8.2 to 8.5.
