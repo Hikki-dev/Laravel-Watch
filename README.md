@@ -1,7 +1,8 @@
-# LUXWATCH
+# LUXWATCH: the marketplace
 
 [![Checks](https://github.com/Hikki-dev/Laravel-Watch/actions/workflows/checks.yml/badge.svg)](https://github.com/Hikki-dev/Laravel-Watch/actions/workflows/checks.yml)
 [![Live demo](https://img.shields.io/badge/live-demo-7a5c28)](https://luxwatch-livid.vercel.app)
+[![Licence: MIT](https://img.shields.io/badge/licence-MIT-7a5c28)](LICENSE)
 ![Laravel 12](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)
 ![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php&logoColor=white)
 ![Postgres or MySQL](https://img.shields.io/badge/Postgres%20%7C%20MySQL-database-4479A1?logo=postgresql&logoColor=white)
@@ -10,6 +11,8 @@
 A luxury watch marketplace you can try in your browser. Buyers find a watch and turn it in their hands, sellers list their own, and an admin approves everything before it goes live.
 
 <p align="center"><a href="https://luxwatch-livid.vercel.app"><img src="docs/images/01-home.jpg" alt="The LUXWATCH home page: a large headline, a featured Rolex and a row of brand logos" width="100%"></a></p>
+
+<p align="center"><sub>The live home page. <b><a href="https://luxwatch-livid.vercel.app">Open the live demo</a></b>, or scroll down for a walkthrough of every screen.</sub></p>
 
 It is a portfolio project, built to show how a careful, well designed store is put together from the first page to the payout.
 
@@ -24,17 +27,22 @@ You do not need to know Laravel to follow this page. Everything is explained in 
 * [Two repos, one store](#two-repos-one-store): the marketplace and the shopper app
 * [Try it first](#try-it-first): the live demo
 * [Before you start](#before-you-start): what your computer needs
-* [Run it](#run-it): ten minutes to a working store
-* [A tour of the store](#a-tour-of-the-store)
+* [Run it yourself](#run-it-yourself): ten minutes to a working store
+* [The store, step by step](#the-store-step-by-step)
   * [1. The home page](#1-the-home-page)
   * [2. The collection](#2-the-collection)
-  * [3. A watch up close](#3-a-watch-up-close)
-  * [4. Brands](#4-brands)
-  * [5. Signing in](#5-signing-in)
-  * [6. The customer area](#6-the-customer-area)
-  * [7. The seller area](#7-the-seller-area)
-  * [8. The admin area](#8-the-admin-area)
-  * [9. On a phone](#9-on-a-phone)
+  * [3. Filter by brand](#3-filter-by-brand)
+  * [4. A watch up close](#4-a-watch-up-close)
+  * [5. The 360° view](#5-the-360-view)
+  * [6. Brands](#6-brands)
+  * [7. Signing in](#7-signing-in)
+  * [8. Creating an account](#8-creating-an-account)
+  * [9. Light and dark](#9-light-and-dark)
+  * [10. About and services](#10-about-and-services)
+  * [11. The customer area](#11-the-customer-area)
+  * [12. The seller area](#12-the-seller-area)
+  * [13. The admin area and approvals](#13-the-admin-area-and-approvals)
+  * [14. On a phone](#14-on-a-phone)
 * [Under the hood](#under-the-hood)
 * [Put it online](#put-it-online)
 * [Your privacy and safety](#your-privacy-and-safety)
@@ -80,7 +88,7 @@ The app signs a person in with Firebase, then trades that sign in for an API tok
 
 **[Open the live demo](https://luxwatch-livid.vercel.app).** Browse the collection, search, filter by brand, open a watch and register as a customer. Nothing is sold, and no real money moves.
 
-The seller and admin accounts are private, but the [tour below](#a-tour-of-the-store) shows every screen of them.
+The seller and admin accounts are private, but the [walkthrough below](#the-store-step-by-step) shows every screen of them.
 
 ## Before you start
 
@@ -90,7 +98,7 @@ You need three things:
 2. Node 20 or newer.
 3. Nothing else. The first run uses a SQLite file, so there is no database to install.
 
-## Run it
+## Run it yourself
 
 ```bash
 git clone https://github.com/Hikki-dev/Laravel-Watch.git
@@ -109,61 +117,123 @@ Open <http://localhost:8000>. The seeder makes 17 watches and three accounts (`c
 
 More detail, and what to do if something does not work, is in [Getting started](docs/Getting%20started.md) and [Fixing problems](docs/Fixing%20problems.md).
 
-## A tour of the store
+## The store, step by step
 
-Pictures 1 to 5 and the phone pictures were taken from the live demo at twice the usual sharpness. The signed in screens (6 to 10) use the sample accounts, which the live demo keeps private. Click a picture to see it full size.
+This walkthrough follows a visitor from the first page to the admin tools. Pictures 1 to 5 and 9 to 14 (the public pages and the phone) were taken from the live demo at twice the usual sharpness. The signed in screens in steps 11 to 13 use the sample accounts, which the live demo keeps private. Click a picture to see it full size.
 
 ### 1. The home page
 
 <a href="docs/images/01-home.jpg"><img src="docs/images/01-home.jpg" alt="Home page with a headline, a featured watch and a scrolling row of brand logos" width="100%"></a>
 
-A big headline, one featured watch and a row of real brand logos that scrolls by itself. Under it come the newest arrivals and a shortcut to each brand. The moon button switches to the dark theme, and your choice is remembered.
+**What you see.** A big headline, "Watches worth waiting for.", and one featured watch. Two buttons sit under it: **Explore watches** and **Become a seller**. A row of real brand logos scrolls by under the hero.
+
+**What comes next.** Scroll down for the newest arrivals ("Just listed"), a shortcut to each brand ("Shop by brand"), and a short pitch for sellers in three steps: list, review, get paid. The page ends with a footer and an email box to join the mailing list.
+
+**Good to know.** The line under the headline says the whole idea in one sentence: every listing is reviewed before it goes live, so what you see is what you can buy.
 
 ### 2. The collection
 
 <a href="docs/images/02-collection.jpg"><img src="docs/images/02-collection.jpg" alt="Collection page with search, price and brand filters and a grid of watches" width="100%"></a>
 
-Every approved watch, with a search box, a price range and a brand list on the left. Search is live: it answers while you type. Photos from different sources, with black, white or studio backgrounds, all sit neatly in the same square.
+**What you see.** "Fine watches" and a count ("17 timepieces" on the demo). The filters are on the left and the watches on the right, three to a row.
 
-### 3. A watch up close
+**What to do.** Type in the search box, set a price range and press **Apply**, or use a quick filter: under $5,000, $5,000 to $15,000, $15,000 to $50,000 or over $50,000. Each card shows the brand, the model and the price. Open one by clicking it.
+
+**Good to know.** Search ignores capital letters and only lists watches that are switched on.
+
+### 3. Filter by brand
+
+<a href="docs/images/13-brand-filter.jpg"><img src="docs/images/13-brand-filter.jpg" alt="The collection filtered to one brand, Omega, showing three Omega watches" width="100%"></a>
+
+**What you see.** The same page, narrowed to one maker. Here the brand list on the left has **Omega** picked, and the count drops to three watches.
+
+**What to do.** Click a brand name in the filter list, or a brand card on the home page, to jump straight to its watches. **All Brands** takes you back.
+
+### 4. A watch up close
 
 <a href="docs/images/03-watch.jpg"><img src="docs/images/03-watch.jpg" alt="A watch page with a large photo, the brand logo, price, description and specifications" width="100%"></a>
 
-The photo, the brand, the reference number, the price and a plain description. Below come the technical details: movement, case, dial, strap and water resistance.
+**What you see.** The photo on the left, sitting on a soft backdrop so any photo fits. On the right: the badges (**New**, **Featured**), the brand logo, the model name, the brand and reference number, and the price. When there is an older price, it is shown struck through with the saving.
 
-When a watch has a 360° set, a **360°** tab appears. You drag the watch round, and buttons jump to the front, the angle, the side or the case back. It is a row of photos, not a 3D model, so it is smooth even on a phone. The full story is in [The 360 viewer](docs/The%20360%20viewer.md).
+**What to do.** Read the description. If you are signed in as a customer you can add the watch to your cart. If you are not, the page says "Please login to purchase this luxury timepiece" and offers a button.
+
+Scroll on for the details:
+
+<a href="docs/images/17-watch-details.jpg"><img src="docs/images/17-watch-details.jpg" alt="The lower half of a watch page: technical specifications, warranty, the seller and a row of related watches" width="100%"></a>
+
+**What comes next.** Technical specifications (movement, case material, dial colour, strap or bracelet, water resistance and year), the warranty, who the seller is, and a row of related watches under **You may also like**.
+
+### 5. The 360° view
+
+When a watch has a 360° set, a **360°** tab appears next to the photos. You drag the watch round, and buttons jump to the front, the angle, the side or the case back. It is a row of photos, not a 3D model, so it is smooth even on a phone. The full story is in [The 360 viewer](docs/The%20360%20viewer.md).
 
 ![How a row of photos becomes a turning watch](docs/images/viewer-360.svg)
 
-### 4. Brands
+### 6. Brands
 
 <a href="docs/images/04-brands.jpg"><img src="docs/images/04-brands.jpg" alt="Brand page with a card for each watch maker" width="100%"></a>
 
-One card for each maker, with its logo and a short description. Admins approve new brands before they appear. Every logo comes from one shared component, so it looks the same on every page.
+**What you see.** One card for each maker, with its logo and a short description.
 
-### 5. Signing in
+**Good to know.** Admins approve new brands before they appear. Every logo comes from one shared component, so it looks the same on every page.
+
+### 7. Signing in
 
 <a href="docs/images/05-sign-in.jpg"><img src="docs/images/05-sign-in.jpg" alt="The sign in page" width="100%"></a>
 
-Email and password, or Google. Two factor sign in and personal API tokens are in the profile. An account can be switched off by an admin, and it is signed out on its next click.
+**What to do.** Email and password, or Google. Two factor sign in and personal API tokens are in the profile.
 
-### 6. The customer area
+**Good to know.** An account can be switched off by an admin, and it is signed out on its next click.
+
+### 8. Creating an account
+
+<a href="docs/images/14-register.jpg"><img src="docs/images/14-register.jpg" alt="The register page with name, email, password, confirm password, register as, a terms box and a Register button" width="100%"></a>
+
+**What to do.** Fill in your name, email, a password and the password again, tick the box for the terms of service and the privacy policy, then press **Register**. The **Register as** box starts on **Customer**. Already have an account? **Already registered?** takes you to sign in.
+
+**Good to know.** Passwords are hashed. A new account starts with the least it can do. A seller's watches and brands wait for an admin before anyone can see them.
+
+### 9. Light and dark
+
+<a href="docs/images/11-dark-home.jpg"><img src="docs/images/11-dark-home.jpg" alt="The home page in the dark theme" width="100%"></a>
+
+**What to do.** The round button at the top of every page, next to **Sign in**, switches between light and dark. Your choice is remembered in your browser.
+
+<a href="docs/images/12-dark-watch.jpg"><img src="docs/images/12-dark-watch.jpg" alt="A watch page in the dark theme" width="100%"></a>
+
+**Good to know.** Both themes use one set of colour names, so every page follows them. One part of the watch page, the "please log in" box, keeps its light colours in the dark theme.
+
+### 10. About and services
+
+<a href="docs/images/15-about.jpg"><img src="docs/images/15-about.jpg" alt="The About page with a banner, the store story and a photo of several watches" width="100%"></a>
+
+**What you see.** The **About us** page tells the story of the store and shows a photo of several watches.
+
+<a href="docs/images/16-services.jpg"><img src="docs/images/16-services.jpg" alt="The Services page with three services: watch servicing and repair, authentication, and valuation and consignment" width="100%"></a>
+
+**Services** lists three things the store says it offers: watch servicing and repair, authentication, and valuation and consignment. These pages are plain text for the demo. Nothing on them is a booking system.
+
+### 11. The customer area
 
 <a href="docs/images/06-customer.png"><img src="docs/images/06-customer.png" alt="Customer dashboard with recent orders" width="100%"></a>
 
-A customer sees their recent orders, adds watches to a cart, pays with Stripe and keeps favourites. Tax of 8% is added at checkout.
+**What you see.** A customer sees their recent orders.
 
-### 7. The seller area
+**What to do.** Add watches to a cart, pay with Stripe, and keep favourites. Tax of 8% is added at checkout. Cards are typed on Stripe, never on this site.
+
+### 12. The seller area
 
 <a href="docs/images/07-seller.png"><img src="docs/images/07-seller.png" alt="Seller dashboard with revenue and order figures" width="100%"></a>
 
-Sellers list their own watches and brands, see only their own orders, and move each one from pending to accepted to shipped. They connect Stripe so they can be paid. Everything they add waits for an admin.
+**What you see.** Sellers list their own watches and brands, see only their own orders, and move each one from pending to accepted to shipped.
 
-### 8. The admin area
+**What to do.** Connect Stripe so you can be paid. Everything a seller adds waits for an admin.
+
+### 13. The admin area and approvals
 
 <a href="docs/images/08-admin.png"><img src="docs/images/08-admin.png" alt="Admin dashboard with totals for products, customers, orders and revenue" width="100%"></a>
 
-The admin sees the whole store at a glance: products, customers, orders and revenue. From here they manage users and read every order.
+**What you see.** The admin sees the whole store at a glance: products, customers, orders and revenue. From here they manage users and read every order.
 
 <a href="docs/images/09-approvals.png"><img src="docs/images/09-approvals.png" alt="The approvals page listing watches and brands waiting for a decision" width="100%"></a>
 
@@ -171,11 +241,17 @@ The admin sees the whole store at a glance: products, customers, orders and reve
 
 <a href="docs/images/10-orders.png"><img src="docs/images/10-orders.png" alt="The admin orders list" width="100%"></a>
 
-### 9. On a phone
+**Orders** lists every order in the store.
 
-<p align="center"><img src="docs/images/mobile-home.jpg" alt="The home page on a phone" width="32%"> <img src="docs/images/mobile-watch.jpg" alt="A watch page on a phone" width="32%"></p>
+> The pictures in steps 11 to 13 were taken earlier from a copy running with the sample accounts, at normal sharpness. They are the only ones that are not retaken from the live demo.
 
-The same pages, laid out for a small screen. The 360° view works with a finger, and horizontal drags turn the watch while up and down still scrolls the page.
+### 14. On a phone
+
+<p align="center"><img src="docs/images/mobile-home.jpg" alt="The home page on a phone" width="24%"> <img src="docs/images/mobile-collection.jpg" alt="The collection page on a phone, with its filters on top" width="24%"> <img src="docs/images/mobile-watch.jpg" alt="A watch page on a phone" width="24%"> <img src="docs/images/mobile-dark-home.jpg" alt="The home page on a phone in the dark theme" width="24%"></p>
+
+The same pages, laid out for a small screen. The menu folds into the button at the top right, and the filters sit above the watches. The 360° view works with a finger, and horizontal drags turn the watch while up and down still scrolls the page.
+
+<p align="center"><img src="docs/images/mobile-register.jpg" alt="The register page on a phone" width="24%"></p>
 
 ## Under the hood
 
@@ -187,13 +263,15 @@ The same pages, laid out for a small screen. The 360° view works with a finger,
 | Database | SQLite to try it, MySQL or Postgres online |
 | Payments | Stripe Checkout and Stripe Connect |
 | Hosting | Vercel with Neon, or Docker on Render with TiDB |
-| Tests | PHPUnit, 92 tests, run on every push |
+| Tests | PHPUnit, over 90 tests, run on every push |
 
 The design is light by default with a dark switch, self hosted fonts (Cormorant Garamond, Hanken Grotesk and DM Mono) and one set of colour tokens that every page follows. Read [Design](docs/DESIGN.md) for the parts, [How it works](docs/How%20it%20works.md) for a map of the code, and [Roles and areas](docs/Roles%20and%20areas.md) for who can do what.
 
 ## Put it online
 
 The live demo runs on **Vercel** with a **Neon** Postgres database. [Vercel and Neon](docs/Vercel%20and%20Neon.md) shows each step and the few things that had to change for serverless. If you prefer a classic server, [Deployment](docs/DEPLOYMENT.md) covers Docker on Render with a free TiDB MySQL database. All the settings are in [Configuration](docs/Configuration.md).
+
+Keep the PHP runtime current. PHP had two critical security fixes in October 2026, and the live demo runs the patched PHP 8.4 runtime. See [Security](SECURITY.md).
 
 ## Your privacy and safety
 
