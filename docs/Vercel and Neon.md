@@ -57,4 +57,4 @@ A free Docker setup on Render with a TiDB MySQL database is in [Deployment](DEPL
 
 ## Keep the PHP runtime current
 
-`vercel.json` names the PHP runtime (`vercel-php@0.9.0`, PHP 8.5). The runtime decides which PHP your site runs, and PHP had two critical security fixes in October 2026. Do not use `vercel-php@0.7.4`, which ships PHP 8.3.8. See [Security](../SECURITY.md).
+`vercel.json` names the PHP runtime (`vercel-php@0.8.0`, PHP 8.4). The runtime decides which PHP your site runs, and PHP had two critical security fixes in October 2026. Do not use `vercel-php@0.7.4`, which ships PHP 8.3.8. `vercel-php@0.9.0` (PHP 8.5) cannot connect to Neon out of the box. See [Security](../SECURITY.md).

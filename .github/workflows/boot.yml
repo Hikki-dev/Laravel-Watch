@@ -97,21 +97,28 @@ jobs:
           RUNTIME=$(grep -o 'vercel-php@[0-9.]*' vercel.json | head -1); echo "runtime: $RUNTIME"
           VER=$(npm view "$RUNTIME" dependencies --json | python3 -c "import sys,json;print(list(json.load(sys.stdin))[0])"); echo "bundle package: $VER"
           mkdir -p /tmp/bundle && cd /tmp/bundle && npm pack "$VER@latest" >/dev/null 2>&1 && tar xzf *.tgz
-          case "$VER" in *almalinux-9*) IMG=almalinux:9;; *) IMG=amazonlinux:2;; esac
+          case "$VER" in *almalinux-9*) IMG=almalinux:9;; *amazon-linux-2023*) IMG=amazonlinux:2023;; *) IMG=amazonlinux:2;; esac
           echo "IMG=$IMG" >> $GITHUB_ENV; docker pull -q $IMG >/dev/null
-          docker run --rm -v /tmp/bundle/package/native:/var/task/native $IMG sh -c 'ln -s /var/task/native/php /var/task/php; export LD_LIBRARY_PATH=$(find /var/task/native -type d -name lib | tr "\n" ":"); /var/task/php/php -r "echo PHP_VERSION, \" \", implode(\",\", get_loaded_extensions()), PHP_EOL;" 2>/dev/null' | tee /tmp/bundle.txt
+          docker run --rm -v /tmp/bundle/package/native:/var/task/native $IMG sh -c 'ln -s /var/task/native/php /var/task/php; export LD_LIBRARY_PATH=$(for d in /var/task/native/lib /var/task/native/*/lib /var/task/native/*/*/lib; do [ -d $d ] && printf "%s:" $d; done); /var/task/php/php -r "echo PHP_VERSION, \" \", implode(\",\", get_loaded_extensions()), PHP_EOL;" 2>/dev/null' | tee /tmp/bundle.txt
           echo "BUNDLE_PHP=$(cut -d' ' -f1 /tmp/bundle.txt)" >> $GITHUB_ENV
       - name: Serve the app with that PHP and request the pages
         run: |
           docker run -d --name app --network host -v $PWD:/app -v /tmp/bundle/package/native:/var/task/native \
             -e VERCEL=1 -e APP_CONFIG_CACHE=/tmp/config.php -e APP_EVENTS_CACHE=/tmp/events.php -e APP_PACKAGES_CACHE=/tmp/packages.php -e APP_ROUTES_CACHE=/tmp/routes.php -e APP_SERVICES_CACHE=/tmp/services.php -e VIEW_COMPILED_PATH=/tmp/storage/framework/views \
-            $IMG sh -c 'ln -s /var/task/native/php /var/task/php; export LD_LIBRARY_PATH=$(find /var/task/native -type d -name lib | tr "\n" ":"); cd /app && /var/task/php/php -S 127.0.0.1:8000 -t public public/index.php'
+            $IMG sh -c 'ln -s /var/task/native/php /var/task/php; export LD_LIBRARY_PATH=$(for d in /var/task/native/lib /var/task/native/*/lib /var/task/native/*/*/lib; do [ -d $d ] && printf "%s:" $d; done); cd /app && /var/task/php/php -S 127.0.0.1:8000 -t public public/index.php'
           sleep 5
           fail=0
           for p in / /products /products/1 /categories /login /register /api/products /up; do
             code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000$p || true); echo "GET $p -> $code"; [ "$code" = 200 ] || fail=1
           done
           [ $fail = 0 ] || { docker logs app 2>&1 | tail -30; exit 1; }
+      - name: Fail if the bundle's database library is too old for Neon
+        run: |
+          # libpq 14 and newer sends SNI. Older ones make Neon answer "Endpoint ID is not specified".
+          docker run --rm --network host -v /tmp/bundle/package/native:/var/task/native $IMG sh -c 'ln -s /var/task/native/php /var/task/php; export LD_LIBRARY_PATH=$(for d in /var/task/native/lib /var/task/native/*/lib /var/task/native/*/*/lib; do [ -d $d ] && printf "%s:" $d; done); /var/task/php/php -r "echo (new PDO(\"pgsql:host=127.0.0.1;dbname=luxwatch\", \"postgres\", \"ci\"))->getAttribute(PDO::ATTR_CLIENT_VERSION);"' > /tmp/libpq.txt
+          echo "bundle libpq: $(cat /tmp/libpq.txt)"
+          major=$(cut -d. -f1 /tmp/libpq.txt)
+          [ "$major" -ge 14 ] || { echo "::error::libpq $(cat /tmp/libpq.txt) does not send SNI, so Neon refuses the connection"; exit 1; }
       - name: Fail if the bundle is older than the October 2026 security releases
         run: |
           echo "bundle PHP: $BUNDLE_PHP"

@@ -53,3 +53,7 @@ Two things cause this, and both were reproduced on a clean machine:
 * **A package cache from your own machine went up with the code.** `bootstrap/cache/packages.php` and `services.php` list development packages such as `laravel/pail`. On Vercel those packages are not installed, so the app stops with "Class Laravel\Pail\PailServiceProvider not found". `.vercelignore` now keeps these files out of the upload.
 
 To see the real error, set `APP_DEBUG=true` on a preview deployment only, then ask for the page with `Accept: application/json`.
+
+## "Endpoint ID is not specified" with Neon
+
+Neon needs to know which database a connection is for. Database client libraries from version 14 send that by themselves (SNI). The PHP 8.5 runtime on Vercel (`vercel-php@0.9.0`) ships libpq 13, which does not, so every page that reads the database fails with a 500 while pages that do not (the login page, `/up`) still load. Use `vercel-php@0.8.0` (PHP 8.4, libpq 18), or pass `options='endpoint=<endpoint-id>'` in the connection. The Production boot check fails if the PHP bundle's libpq is older than 14.

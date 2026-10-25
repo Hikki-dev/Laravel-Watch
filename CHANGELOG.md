@@ -2,6 +2,11 @@
 
 What changed in each version, newest first.
 
+## 1.0.3 (25 October 2026)
+
+1. **Fixed:** the Vercel runtime moves to `vercel-php@0.8.0` (PHP 8.4.27, with the October 2026 security fixes). The earlier try with `0.9.0` (PHP 8.5) failed because its database library (libpq 13) does not send the Neon endpoint name. This was reproduced on a GitHub runner against a copy of the Neon database, and `0.8.0` (libpq 18) connects and serves every page.
+2. **New:** the Production boot check now fails if the PHP bundle's libpq is older than 14.
+
 ## Runtime change reverted
 
 1. `vercel.json` is back on `vercel-php@0.7.4`. Deploying with `0.9.0` (PHP 8.5) returned HTTP 500 on every page that reads the database (home, products, categories, the products API) while `/login` still worked, so it was rolled back the same day. The CI boot check passed on that runtime, so CI does not yet reproduce the failure. The cause is not known.
