@@ -54,3 +54,7 @@ Vercel runs code only when someone asks for a page, so there is no server to loo
 ## The other way: Render and TiDB
 
 A free Docker setup on Render with a TiDB MySQL database is in [Deployment](DEPLOYMENT.md). Use that if you want a classic, always on server.
+
+## Keep the PHP runtime current
+
+`vercel.json` names the PHP runtime (`vercel-php@0.9.0`, PHP 8.5). The runtime decides which PHP your site runs, and PHP had two critical security fixes in October 2026. Do not use `vercel-php@0.7.4`, which ships PHP 8.3.8. See [Security](../SECURITY.md).
