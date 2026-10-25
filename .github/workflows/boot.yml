@@ -112,6 +112,13 @@ jobs:
             code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000$p || true); echo "GET $p -> $code"; [ "$code" = 200 ] || fail=1
           done
           [ $fail = 0 ] || { docker logs app 2>&1 | tail -30; exit 1; }
+      - name: Fail if the bundle's database library is too old for Neon
+        run: |
+          # libpq 14 and newer sends SNI. Older ones make Neon answer "Endpoint ID is not specified".
+          docker run --rm --network host -v /tmp/bundle/package/native:/var/task/native $IMG sh -c 'ln -s /var/task/native/php /var/task/php; export LD_LIBRARY_PATH=$(for d in /var/task/native/lib /var/task/native/*/lib /var/task/native/*/*/lib; do [ -d $d ] && printf "%s:" $d; done); /var/task/php/php -r "echo (new PDO(\"pgsql:host=127.0.0.1;dbname=luxwatch\", \"postgres\", \"ci\"))->getAttribute(PDO::ATTR_CLIENT_VERSION);"' > /tmp/libpq.txt
+          echo "bundle libpq: $(cat /tmp/libpq.txt)"
+          major=$(cut -d. -f1 /tmp/libpq.txt)
+          [ "$major" -ge 14 ] || { echo "::error::libpq $(cat /tmp/libpq.txt) does not send SNI, so Neon refuses the connection"; exit 1; }
       - name: Fail if the bundle is older than the October 2026 security releases
         run: |
           echo "bundle PHP: $BUNDLE_PHP"
