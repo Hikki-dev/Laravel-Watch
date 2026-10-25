@@ -2,6 +2,11 @@
 
 What changed in each version, newest first.
 
+## Runtime change reverted
+
+1. `vercel.json` is back on `vercel-php@0.7.4`. Deploying with `0.9.0` (PHP 8.5) returned HTTP 500 on every page that reads the database (home, products, categories, the products API) while `/login` still worked, so it was rolled back the same day. The CI boot check passed on that runtime, so CI does not yet reproduce the failure. The cause is not known.
+2. The site therefore still runs the older PHP 8.3 build. Do not deploy `0.9.0` until the cause is found; test any new runtime as a preview and open the products page first.
+
 ## 1.0.2 (24 October 2026)
 
 * **Fixed:** the package cache from a developer machine is no longer uploaded to Vercel, where it listed a development only package and stopped the app from starting
