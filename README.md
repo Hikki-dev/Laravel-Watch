@@ -119,7 +119,7 @@ More detail, and what to do if something does not work, is in [Getting started](
 
 ## The store, step by step
 
-This walkthrough follows a visitor from the first page to the admin tools. Pictures 1 to 10 and 14 (the public pages and the phone) were taken from the live demo at twice the usual sharpness. The signed in screens in steps 11 to 13 were taken from a copy of the store running on `localhost` with the sample data and the sample accounts, because the live demo keeps its accounts private. Click a picture to see it full size.
+This walkthrough follows a visitor from the first page to the admin tools. The pictures in steps 1 to 10 and 14 (the public pages and the phone) were taken from the live demo at twice the usual sharpness. The signed in screens in steps 11 to 13 were taken from a copy of the store running on `localhost` with the sample data and the sample accounts, because the live demo keeps its accounts private. Click a picture to see it full size.
 
 ### 1. The home page
 
