@@ -55,15 +55,15 @@ Each part does one small job. Together they make a store that feels like the rea
 
 | | What | What it does |
 |---|---|---|
-| 🛍️ | **Storefront** | A light and dark theme, brand logos, search, filters and photos that always fit |
-| 🔄 | **360° views** | Drag a watch round with your finger, the way the big brand sites do |
-| 👤 | **Three roles** | Customers buy, sellers list, admins approve |
-| ✅ | **Approvals** | New watches and brands stay hidden until an admin says yes |
-| 🛒 | **Cart and checkout** | Stripe Checkout, tax added, order history |
-| 💸 | **Seller payouts** | Stripe Connect pays sellers when they sell |
-| 🔐 | **Sign in** | Email and password, Google, two factor, API tokens (Jetstream) |
-| 📱 | **REST API** | Token based, used by the Flutter app. See the [API reference](docs/API.md) |
-| ☁️ | **Serverless ready** | Runs on Vercel with a Neon Postgres database, or on a normal server with MySQL |
+| <img src="docs/images/icons/storefront.svg" width="28" height="28" alt="Storefront"> | **Storefront** | A light and dark theme, brand logos, search, filters and photos that always fit |
+| <img src="docs/images/icons/360-view.svg" width="28" height="28" alt="360° views"> | **360° views** | Drag a watch round with your finger, the way the big brand sites do |
+| <img src="docs/images/icons/roles.svg" width="28" height="28" alt="Roles"> | **Three roles** | Customers buy, sellers list, admins approve |
+| <img src="docs/images/icons/approvals.svg" width="28" height="28" alt="Approvals"> | **Approvals** | New watches and brands stay hidden until an admin says yes |
+| <img src="docs/images/icons/cart.svg" width="28" height="28" alt="Cart"> | **Cart and checkout** | Stripe Checkout, tax added, order history |
+| <img src="docs/images/icons/stripe.svg" width="28" height="28" alt="Stripe"> | **Seller payouts** | Stripe Connect pays sellers when they sell |
+| <img src="docs/images/icons/sign-in.svg" width="28" height="28" alt="Sign in"> | **Sign in** | Email and password, Google, two factor, API tokens (Jetstream) |
+| <img src="docs/images/icons/api.svg" width="28" height="28" alt="API"> | **REST API** | Token based, used by the Flutter app. See the [API reference](docs/API.md) |
+| <img src="docs/images/icons/vercel.svg" width="28" height="28" alt="Vercel"> <img src="docs/images/icons/neon.svg" width="28" height="28" alt="Neon"> | **Serverless ready** | Runs on Vercel with a Neon Postgres database, or on a normal server with MySQL |
 
 ## How everything fits together
 
@@ -306,15 +306,15 @@ The same pages, laid out for a small screen. The menu folds into the button at t
 
 ## Under the hood
 
-| Area | Choice |
-|---|---|
-| Framework | Laravel 12, PHP 8.2+ |
-| Pages | Blade, Livewire 3, Alpine.js, Tailwind CSS, Vite |
-| Sign in | Jetstream, Fortify, Sanctum, Socialite |
-| Database | SQLite to try it, MySQL or Postgres online |
-| Payments | Stripe Checkout and Stripe Connect |
-| Hosting | Vercel with Neon, or Docker on Render with TiDB |
-| Tests | PHPUnit, over 90 tests, run on every push |
+| | Area | Choice |
+|---|---|---|
+| <img src="docs/images/icons/laravel.svg" width="28" height="28" alt="Laravel"> | Framework | Laravel 12, PHP 8.2+ |
+| <img src="docs/images/icons/livewire.svg" width="28" height="28" alt="Livewire"> <img src="docs/images/icons/alpine.svg" width="28" height="28" alt="Alpine.js"> <img src="docs/images/icons/tailwind.svg" width="28" height="28" alt="Tailwind CSS"> | Pages | Blade, Livewire 3, Alpine.js, Tailwind CSS, Vite |
+| <img src="docs/images/icons/sign-in.svg" width="28" height="28" alt="Sign in"> | Sign in | Jetstream, Fortify, Sanctum, Socialite |
+| <img src="docs/images/icons/postgresql.svg" width="28" height="28" alt="PostgreSQL"> | Database | SQLite to try it, MySQL or Postgres online |
+| <img src="docs/images/icons/stripe.svg" width="28" height="28" alt="Stripe"> | Payments | Stripe Checkout and Stripe Connect |
+| <img src="docs/images/icons/vercel.svg" width="28" height="28" alt="Vercel"> <img src="docs/images/icons/neon.svg" width="28" height="28" alt="Neon"> | Hosting | Vercel with Neon, or Docker on Render with TiDB |
+| <img src="docs/images/icons/approvals.svg" width="28" height="28" alt="Tests"> | Tests | PHPUnit, over 90 tests, run on every push |
 
 The design is light by default with a dark switch, self hosted fonts (Cormorant Garamond, Hanken Grotesk and DM Mono) and one set of colour tokens that every page follows. Read [Design](docs/DESIGN.md) for the parts, [How it works](docs/How%20it%20works.md) for a map of the code, and [Roles and areas](docs/Roles%20and%20areas.md) for who can do what.
 
@@ -366,4 +366,4 @@ Fixes and ideas are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first. It e
 
 ## Credits
 
-Built by [Yusuf (Hikki-dev)](https://github.com/Hikki-dev). Laravel, Livewire, Alpine, Tailwind and Jetstream do the heavy lifting. Fonts are Cormorant Garamond, Hanken Grotesk and DM Mono through Fontsource.
+Built by [Yusuf (Hikki-dev)](https://github.com/Hikki-dev). Laravel, Livewire, Alpine, Tailwind and Jetstream do the heavy lifting. Fonts are Cormorant Garamond, Hanken Grotesk and DM Mono through Fontsource. Icons are from [Lucide](https://lucide.dev) and the logos from [Simple Icons](https://simpleicons.org); see [docs/images/icons](docs/images/icons/README.md).
