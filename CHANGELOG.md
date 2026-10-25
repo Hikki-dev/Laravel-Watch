@@ -5,6 +5,7 @@ What changed in each version, newest first.
 ## 1.0.2 (24 October 2026)
 
 * **Fixed:** the package cache from a developer machine is no longer uploaded to Vercel, where it listed a development only package and stopped the app from starting
+* **Security:** the Vercel runtime moves from PHP 8.3.8 to PHP 8.5.12, which includes the October 2026 PHP security fixes
 * **New:** a check on every push that boots the app with production packages, built assets and Vercel's settings
 * **Better:** the guide for fixing problems explains the two causes of an empty error page on Vercel
 
