@@ -15,7 +15,9 @@ jobs:
         run: |
           mkdir -p /tmp/p83 && cd /tmp/p83 && npm pack @libphp/amazon-linux-2-v83@latest >/dev/null 2>&1 && tar xzf *.tgz
           ls package | head; B=$(find package -type f -name php -perm -u+x | head -1); echo "binary: $B"
-          docker run --rm -v /tmp/p83/package:/p amazonlinux:2 sh -c "export LD_LIBRARY_PATH=\$(find /p -type d -name lib | tr '\n' ':'); $(echo $B | sed 's#^package#/p#') -v" 2>&1 | head -3
+          docker pull -q amazonlinux:2 >/dev/null
+          docker run --rm -v /tmp/p83/package:/p amazonlinux:2 sh -c 'export LD_LIBRARY_PATH=$(find /p -type d -name lib | tr "\n" ":"); /p/native/php/php -v' > /tmp/v83.txt 2>&1 || true
+          echo "PHP83BUNDLE: $(head -1 /tmp/v83.txt)"
       - name: PHP bundled by vercel-php 0.9.0 (PHP 8.5)
         run: |
           mkdir -p /tmp/p85 && cd /tmp/p85 && npm pack @libphp/almalinux-9-v85@latest >/dev/null 2>&1 && tar xzf *.tgz
