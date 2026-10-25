@@ -99,13 +99,13 @@ jobs:
           mkdir -p /tmp/bundle && cd /tmp/bundle && npm pack "$VER@latest" >/dev/null 2>&1 && tar xzf *.tgz
           case "$VER" in *almalinux-9*) IMG=almalinux:9;; *) IMG=amazonlinux:2;; esac
           echo "IMG=$IMG" >> $GITHUB_ENV; docker pull -q $IMG >/dev/null
-          docker run --rm -v /tmp/bundle/package:/p $IMG sh -c 'export LD_LIBRARY_PATH=$(find /p -type d -name lib | tr "\n" ":"); /p/native/php/php -r "echo PHP_VERSION, \" \", implode(\",\", get_loaded_extensions()), PHP_EOL;" 2>/dev/null' | tee /tmp/bundle.txt
+          docker run --rm -v /tmp/bundle/package/native/php:/var/task/php $IMG sh -c 'export LD_LIBRARY_PATH=$(find /var/task/php -type d -name lib | tr "\n" ":"); /var/task/php/php -r "echo PHP_VERSION, \" \", implode(\",\", get_loaded_extensions()), PHP_EOL;" 2>/dev/null' | tee /tmp/bundle.txt
           echo "BUNDLE_PHP=$(cut -d' ' -f1 /tmp/bundle.txt)" >> $GITHUB_ENV
       - name: Serve the app with that PHP and request the pages
         run: |
-          docker run -d --name app --network host -v $PWD:/app -v /tmp/bundle/package:/p \
+          docker run -d --name app --network host -v $PWD:/app -v /tmp/bundle/package/native/php:/var/task/php \
             -e VERCEL=1 -e APP_CONFIG_CACHE=/tmp/config.php -e APP_EVENTS_CACHE=/tmp/events.php -e APP_PACKAGES_CACHE=/tmp/packages.php -e APP_ROUTES_CACHE=/tmp/routes.php -e APP_SERVICES_CACHE=/tmp/services.php -e VIEW_COMPILED_PATH=/tmp/storage/framework/views \
-            $IMG sh -c 'export LD_LIBRARY_PATH=$(find /p -type d -name lib | tr "\n" ":"); cd /app && /p/native/php/php -S 127.0.0.1:8000 -t public public/index.php'
+            $IMG sh -c 'export LD_LIBRARY_PATH=$(find /var/task/php -type d -name lib | tr "\n" ":"); cd /app && /var/task/php/php -S 127.0.0.1:8000 -t public public/index.php'
           sleep 5
           fail=0
           for p in / /products /products/1 /categories /login /register /api/products /up; do
