@@ -2,6 +2,10 @@
 
 What changed in each version, newest first.
 
+## 1.0.4 (25 October 2026)
+
+* **Security:** removed the public `/fix-db` page. It ran `migrate:fresh --seed` for anyone who opened it. On the live site it did nothing only because the command refuses to run unprompted in production, but anywhere else it would have wiped the database. A test now fails if such a route comes back.
+
 ## 1.0.3 (25 October 2026)
 
 1. **Fixed:** the Vercel runtime moves to `vercel-php@0.8.0` (PHP 8.4.27, with the October 2026 security fixes). The earlier try with `0.9.0` (PHP 8.5) failed because its database library (libpq 13) does not send the Neon endpoint name. This was reproduced on a GitHub runner against a copy of the Neon database, and `0.8.0` (libpq 18) connects and serves every page.
