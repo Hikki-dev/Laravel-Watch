@@ -19,7 +19,7 @@ You do not need to know Laravel to follow this page. Everything is explained in 
 
 ## On this page
 
-* [What you get](#what-you-get): the parts of the store
+* [What you get](#what-you-get): the parts of the store, and what it is built with
 * [How everything fits together](#how-everything-fits-together): from a click to the database
 * [Two repos, one store](#two-repos-one-store): the marketplace and the shopper app
 * [Try it first](#try-it-first): the live demo
@@ -56,6 +56,17 @@ Each part does one small job. Together they make a store that feels like the rea
 | 🔐 | **Sign in** | Email and password, Google, two factor, API tokens (Jetstream) |
 | 📱 | **REST API** | Token based, used by the Flutter app. See the [API reference](docs/API.md) |
 | ☁️ | **Serverless ready** | Runs on Vercel with a Neon Postgres database, or on a normal server with MySQL |
+
+### What it is built with
+
+<table>
+<tr><td width="64"><img src="docs/images/icons/laravel.png" alt="Laravel logo" width="48"></td><td width="170"><b>Laravel 12</b></td><td>The marketplace: pages, sign-in, roles and the REST API</td></tr>
+<tr><td><img src="docs/images/icons/livewire.png" alt="Livewire logo" width="48"></td><td><b>Livewire</b></td><td>Interactive pages without a separate front-end app</td></tr>
+<tr><td><img src="docs/images/icons/postgresql.png" alt="PostgreSQL logo" width="48"></td><td><b>PostgreSQL</b></td><td>Keeps the watches, orders and accounts. Neon online, or MySQL on a normal server</td></tr>
+<tr><td><img src="docs/images/icons/stripe.png" alt="Stripe logo" width="48"></td><td><b>Stripe</b></td><td>Checkout, tax and payouts to sellers (test mode only)</td></tr>
+<tr><td><img src="docs/images/icons/vercel.png" alt="Vercel logo" width="48"></td><td><b>Vercel</b></td><td>Runs the store with no server to look after</td></tr>
+<tr><td><img src="docs/images/icons/githubactions.png" alt="GitHub Actions logo" width="48"></td><td><b>GitHub Actions</b></td><td>Runs the checks on every change</td></tr>
+</table>
 
 ## How everything fits together
 
